@@ -14,18 +14,28 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from .views import hello, get_numbers, StoreStaffView, StoreStaffViewSet
+from django.urls import path, include
+from .views import hello, get_numbers, StoreStaffView, ComponentInstanceViewSet, ComponentListView, home, USViewSet, \
+    us_list, sv_list, SVViewSet, ShippedViewSet, shipped_list, get_fulllist_with_shipment
 
 from rest_framework.routers import SimpleRouter
 
 router = SimpleRouter()
-router.register('staff-new', StoreStaffViewSet)
-
+router.register('components', ComponentInstanceViewSet)
+router.register('us', USViewSet)
+router.register('sv', SVViewSet)
+router.register('shipped', ShippedViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', hello),
     path('numbers/', get_numbers),
-    path('staff/', StoreStaffView.as_view())
+    path('staff/', StoreStaffView.as_view()),
+    path('components1/', ComponentListView.as_view()),
+    path('test', home),
+    path('us_components', us_list),
+    path('sv_components', sv_list),
+    path('shipped_components', shipped_list),
+    path('try/', get_fulllist_with_shipment),
+
 ] + router.urls

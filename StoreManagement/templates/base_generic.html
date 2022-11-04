@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+
+  {% block title %}<title>Local Library</title>{% endblock %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <!-- Добавление дополнительного статического CSS файла -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+
+        img{
+         img.background {
+          min-height: 100%;
+          min-width: 640px;
+          width: 100%;
+          height: auto;
+          position: fixed;
+          top: 0;
+          left: 0;
+          }
+          text_align ri
+    </style>
+</head>
+
+<body>
+<img src="{% static 'media/images/1.jpg' %}" width="100%" height="auto" />
+  <div class="container-fluid">
+
+    <div class="row">
+      <div class="col-sm-2">
+      {% block sidebar %}
+
+      <ul class="sidebar-nav" ar>
+          <li><a href="http://127.0.0.1:8000/test">List of all received items</a></li>
+          <li><a href="http://127.0.0.1:8000/sv_components">List of all serviceable items</a></li>
+          <li><a href="http://127.0.0.1:8000/us_components">List of all unserviceable items</a></li>
+          <li><a href="http://127.0.0.1:8000/shipped_components">List of all shipped items</a></li>
+      </ul>
+     {% endblock %}
+      </div>
+      <div class="col-sm-10 ">
+      {% block content %}{% endblock %}
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,6 +1,12 @@
+import datetime
+from django.contrib.auth.models import AbstractUser
+import django
+from django.contrib.auth.models import User
+from django.utils import timezone
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from django.urls import reverse
+
 """
     Warehouse:
         - id
@@ -60,6 +66,8 @@ from django.urls import reverse
         - condition received (FK -> Status) 
 """
 
+class CustomUser(AbstractUser):
+    middle_name = models.CharField(max_length=50, null=True, blank=True)
 
 
 class Warehouse(models.Model):
@@ -73,25 +81,21 @@ class Warehouse(models.Model):
         verbose_name_plural = "Warehouses"
 
 
-class Case(models.Model):
-    code = models.CharField(max_length=50, unique=True)
-    warehouse = models.ForeignKey('Warehouse', on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name = "Case"
-        verbose_name_plural = "Cases"
-
-
 class Shelve(models.Model):
-    order_number = models.PositiveSmallIntegerField(unique=True)
-    case = models.ForeignKey('Case', on_delete=models.CASCADE)
-    warehouse = models.ForeignKey('Warehouse', on_delete=models.CASCADE)
+    shelve_number = models.PositiveSmallIntegerField(unique=True)
+
 
     class Meta:
         verbose_name = "Shelf"
         verbose_name_plural = "Shelves"
-        ordering = ('order_number',)
 
+
+class Location(models.Model):
+    store = models.ForeignKey('Warehouse', on_delete=models.CASCADE)
+    shelve = models.ForeignKey('Shelve', on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.store} {"-"} {self.shelve}'
 
 class Customer(models.Model):
     customer = models.CharField(max_length=40)
@@ -106,7 +110,7 @@ class Customer(models.Model):
 class StoreStaff(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
-    phone = PhoneNumberField(null=False, blank=False, unique=True)
+    # phone = PhoneNumberField(null=False, blank=False, unique=True)
     objects = models.Manager()
 
     def __str__(self):
@@ -130,46 +134,55 @@ class RepairCompany(models.Model):
         ordering = ('company',)
 
 
-class Status(models.Model):
+class Condition(models.Model):
     condition = models.CharField(max_length=20)
 
     def __str__(self):
         return f"{self.condition}"
 
     class Meta:
-        verbose_name = "Condition/Status"
-        verbose_name_plural = "Statuses"
+        verbose_name = "Condition"
+        verbose_name_plural = "Conditions"
         ordering = ('condition',)
 
 
 class Component(models.Model):
     description = models.CharField(max_length=30)
-    part_number = models.CharField(max_length=50, unique=True)
-    customer = models.ForeignKey('Customer', on_delete=models.CASCADE)
+    part_number = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"{self.description} - {self.part_number}"
+        return f"{self.description} {'P/N '}{self.part_number}"
 
     class Meta:
         verbose_name = "ComponentAbstract"
         verbose_name_plural = "ComponentsAbstract"
-        ordering = ('part_number',)
 
+class QuantityType(models.Model):
+    quantity_type = models.CharField(max_length=30)
+
+    def __str__(self):
+        return f'{self.quantity_type}'
 
 class ComponentInstance(models.Model):
     component = models.ForeignKey('Component', on_delete=models.CASCADE)
-    serial_number = models.CharField(max_length=50, unique=True)
-    status = models.ManyToManyField("Status")
-    date_received = models.DateField(auto_now=False, auto_now_add=False)
+    serial_number = models.CharField(max_length=50)
+    customer = models.ForeignKey('Customer', on_delete=models.CASCADE, default=1)
+    condition_received = models.ForeignKey("Condition", on_delete=models.CASCADE)
+    date_received = models.DateField(default=django.utils.timezone.now)
+    time_create = models.DateTimeField(auto_now_add=True)
+    time_update = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='updated_by_user', null=True, blank=True)
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='created_by_user', null=True, blank=True)
     received_from = models.CharField(max_length=30)
-    staff_received = models.ManyToManyField("StoreStaff", related_name='staff_received')
+    staff_received = models.ForeignKey("StoreStaff", on_delete=models.CASCADE)
     quantity = models.PositiveSmallIntegerField(default=1)
+    unit = models.ForeignKey('QuantityType', on_delete=models.CASCADE, default=1)
+    location = models.ForeignKey('Location', on_delete=models.CASCADE, null=True, blank=True)
+    notes = models.CharField(max_length=50, null=True, blank=True)
 
-    def get_absolute_url(self):
-        return reverse('post', kwargs={'post_id':self.pk})
 
     def __str__(self):
-        return f"{self.component} - {self.serial_number}"
+        return f"{self.component} {'S/N  '} {self.serial_number}"
 
     class Meta:
         verbose_name = "Component"
@@ -177,19 +190,24 @@ class ComponentInstance(models.Model):
         ordering = ('component',)
 
 
-class ComponentCard(models.Model):
+class ComponentShipment(models.Model):
     component = models.ForeignKey('ComponentInstance', on_delete=models.CASCADE)
-    date_shipped = models.DateField(auto_now=False, auto_now_add=False)
-    shipped_to = models.CharField(max_length=30)
-    shipped_status = models.ManyToManyField("Status")
-    invoice = models.CharField(max_length=30)
-    staff_shipped = models.ManyToManyField("StoreStaff", related_name='staff_shipped')
+    date_shipped = models.DateField(default=django.utils.timezone.now)
+    shipped_to = models.CharField(max_length=30, null=True, blank=True)
+    shipped_condition = models.ForeignKey("Condition", on_delete=models.CASCADE)
+    invoice = models.CharField(max_length=30, null=True, blank=True)
+    staff_shipped = models.ForeignKey("StoreStaff", on_delete=models.CASCADE, null=True, blank=True)
+    scrapped_company = models.ForeignKey('RepairCompany', on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.component} {self.date_shipped} {self.shipped_to}'
 
 
 class RepairManagement(models.Model):
     component = models.ForeignKey('ComponentInstance', on_delete=models.CASCADE)
     repair_company = models.ForeignKey('RepairCompany', on_delete=models.CASCADE)
-    date_shipped = models.DateField(auto_now=False, auto_now_add=False)
-    date_received = models.DateField(auto_now=False, auto_now_add=False)
+    date_shipped = models.DateField(default=django.utils.timezone.now)
     staff = models.ForeignKey('StoreStaff', on_delete=models.CASCADE)
-    condition_received = models.ForeignKey('Status', on_delete=models.CASCADE)
+    date_received = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
+    condition_received = models.ForeignKey('Condition', on_delete=models.CASCADE, null=True, blank=True)
+
