@@ -111,8 +111,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -129,6 +127,10 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static/'
+
+import django_heroku
+
+django_heroku.settings(locals())
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media/'

@@ -133,8 +133,6 @@ class ComponentAdmin(ImportExportModelAdmin):
 admin.site.register(Component, ComponentAdmin)
 
 class CustomUserAdmin(admin.ModelAdmin):
-
     pass
-
 admin.site.register(CustomUser, CustomUserAdmin)
 
