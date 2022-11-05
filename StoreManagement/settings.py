@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     'StoreManagement',
     'rest_framework.authtoken',
+    'django-heroku',
 
 ]
 
