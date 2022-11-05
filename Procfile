@@ -1,1 +1,1 @@
-web: gunicorn StoreManagement.StoreManagement.wsgi
+web: gunicorn StoreManagement.wsgi
