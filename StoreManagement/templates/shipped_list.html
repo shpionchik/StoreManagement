@@ -46,9 +46,9 @@
 
         {% for i in response %}
          <tr>
-            <td>{{i.component.component.description}}</td>
-            <td>{{i.component.component.part_number}}</td>
-            <td>{{i.component.serial_number}}</td>
+            <td>{{i.shipped_component.component.description}}</td>
+            <td>{{i.shipped_component.component.part_number}}</td>
+            <td>{{i.shipped_component.serial_number}}</td>
             <td>{{i.date_shipped}}</td>
             <td>{{i.shipped_condition.condition}}</td>
             <td>{{i.shipped_to}}</td>

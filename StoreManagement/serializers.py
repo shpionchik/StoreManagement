@@ -84,6 +84,7 @@ class ScrappedCompanySerializer(ModelSerializer):
         model = RepairCompany
         fields = ['company']
 
+
 class ShippedListSerializer(ModelSerializer):
     shipped_component = ComponentInstanceNestedSerializer()
     staff_shipped = StaffReceivedNestedSerializer()
