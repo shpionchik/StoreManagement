@@ -36,7 +36,7 @@ urlpatterns = [
     path('test', home),
     # path('action_page.php', get_numbers),
     path('us_components', us_list),
-    path('nordicstore.herokuapp/sv_components', sv_list),
+    path('sv_components', sv_list),
     path('shipped_components', shipped_list),
 
 ] + router.urls

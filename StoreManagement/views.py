@@ -56,7 +56,7 @@ class ComponentInstanceViewSet(ModelViewSet):
 
 
 def home(request):
-    response = requests.get('https://nordicstore.herokuapp.com/components/').json()
+    response = requests.get('http://nordicstore.herokuapp.com/components/').json()
     return render(request, 'home.html', {'response': response})
 
 
@@ -67,7 +67,7 @@ class USViewSet(ModelViewSet):
 
 
 def us_list(request):
-    response = requests.get('https://nordicstore.herokuapp.com/us/').json()
+    response = requests.get('http://nordicstore.herokuapp.com/us/').json()
     return render(request, 'home.html', {'response': response})
 
 
@@ -78,7 +78,7 @@ class SVViewSet(ModelViewSet):
 
 
 def sv_list(request):
-    response = requests.get('https://nordicstore.herokuapp.com/sv/').json()
+    response = requests.get('http://127.0.0.1:8000/sv/').json()
     return render(request, 'home.html', {'response': response})
 
 
