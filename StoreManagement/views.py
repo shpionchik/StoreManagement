@@ -56,7 +56,7 @@ class ComponentInstanceViewSet(ModelViewSet):
 
 
 def home(request):
-    response = requests.get('http://127.0.0.1:8000/components/').json()
+    response = requests.get('/components/').json()
     return render(request, 'home.html', {'response': response})
 
 
@@ -67,7 +67,7 @@ class USViewSet(ModelViewSet):
 
 
 def us_list(request):
-    response = requests.get('http://127.0.0.1:8000/us/').json()
+    response = requests.get('/us/').json()
     return render(request, 'home.html', {'response': response})
 
 
@@ -78,7 +78,7 @@ class SVViewSet(ModelViewSet):
 
 
 def sv_list(request):
-    response = requests.get('http://127.0.0.1:8000/sv/').json()
+    response = requests.get('/sv/').json()
     return render(request, 'home.html', {'response': response})
 
 
@@ -89,7 +89,7 @@ class ShippedViewSet(ModelViewSet):
 
 
 def shipped_list(request):
-    response = requests.get('http://127.0.0.1:8000/shipped/').json()
+    response = requests.get('/shipped/').json()
     return render(request, 'shipped_list.html', {'response': response})
 
 
