@@ -1,10 +1,12 @@
 from django.contrib import admin
 from import_export import resources, widgets, fields
+from django.contrib.admin.views.main import ChangeList
+from .forms import DespatchNoteChangeListForm
 from import_export.admin import ImportExportModelAdmin
 from import_export.widgets import ForeignKeyWidget
 from import_export.resources import Field
 from .models import Warehouse, Shelve, Customer, Component, RepairCompany, Condition, StoreStaff, \
-    ComponentInstance, RepairManagement, ComponentShipment, QuantityType, Location, CustomUser
+    ComponentInstance, RepairManagement, ComponentShipment, QuantityType, Location, CustomUser, DespatchNote
 
 
 # class CompositeForeignWidget(widgets.ForeignKeyWidget):
@@ -31,7 +33,7 @@ class ComponentResource(resources.ModelResource):
         # exclude = ('id',)
         import_id_fields = ['id']
         fields = ('id', 'component', 'serial_number', 'quantity', 'received_from', 'staff_received', 'date_received',
-                  'condition_received','quantity', 'unit', 'location')
+                  'condition_received', 'quantity', 'unit', 'location')
 
     # def get_import_fields(self):
     #     return [self.fields[f] for f in ['description', 'part_number']]
@@ -46,15 +48,57 @@ class ComponentAbstractResource(resources.ModelResource):
         fields = ('id', 'description', 'part_number')
 
 
+class DespatchNoteChangeList(ChangeList):
+    def __init__(self,
+                 request,
+                 model,
+                 list_display,
+                 list_display_links,
+                 list_filter,
+                 date_hierarchy,
+                 search_fields,
+                 list_select_related,
+                 list_per_page,
+                 list_max_show_all,
+                 list_editable,
+                 model_admin,
+                 sortable_by,
+                 search_help_text): super(DespatchNoteChangeList, self).__init__(request, model, list_display,
+                                                                                      list_display_links, list_filter,
+                                                                                      date_hierarchy, search_fields,
+                                                                                      list_select_related,
+                                                                                      list_per_page, list_max_show_all,
+                                                                                      list_editable, model_admin,
+                                                                                      sortable_by, search_help_text)
+
+    list_display = ['despatch_note', 'despatched_unit']
+    list_display_links = ['despatch_note']
+    list_editable = ['despatched_unit']
+
+
+class DespatchNoteAdmin(admin.ModelAdmin):
+    def get_changelist(self, request, **kwargs):
+        return DespatchNoteChangeList
+
+    def get_changelist_form(self, request, **kwargs):
+        return DespatchNoteChangeListForm
+
+
+admin.site.register(DespatchNote, DespatchNoteAdmin)
+
+
 class ComponentShipmentAdmin(admin.ModelAdmin):
-    list_display = ('component', 'date_shipped', 'shipped_to', 'shipped_condition', 'invoice', 'staff_shipped')
+
+    list_display = ('shipped_component', 'date_shipped', 'shipped_to', 'shipped_condition', 'invoice', 'staff_shipped',
+                    'scrapped_company', 'shipping_notes')
 
 
 admin.site.register(ComponentShipment, ComponentShipmentAdmin)
 
 
 class RepairManagementAdmin(admin.ModelAdmin):
-    list_display = ('component', 'repair_company', 'date_shipped', 'date_received', 'staff', 'condition_received')
+    list_display = ('component_for_repair', 'repair_company', 'date_shipped', 'date_received', 'staff_shipped',
+                    'condition_received', 'repair_order')
 
 
 admin.site.register(RepairManagement, RepairManagementAdmin)
@@ -132,7 +176,9 @@ class ComponentAdmin(ImportExportModelAdmin):
 
 admin.site.register(Component, ComponentAdmin)
 
+
 class CustomUserAdmin(admin.ModelAdmin):
     pass
-admin.site.register(CustomUser, CustomUserAdmin)
 
+
+admin.site.register(CustomUser, CustomUserAdmin)

@@ -23,6 +23,7 @@ def auth(request):
         context={}
     )
 
+
 def hello(request):
     return render(
         request=request,
@@ -31,24 +32,6 @@ def hello(request):
     )
 
 
-def get_numbers(request):
-    values = []
-    for value in range(20):
-        values.append(
-            {
-                'value': value,
-                'square': value ** 2
-
-            }
-        )
-
-    return render(
-        request=request,
-        template_name='numbers.html',
-        context={
-            'values_list': values
-        }
-    )
 
 
 class StoreStaffView(View):
@@ -64,12 +47,6 @@ class StoreStaffView(View):
             })
 
         return JsonResponse(date)
-
-
-#
-# class StoreStaffViewSet(ModelViewSet):
-#     queryset = StoreStaff.objects.filter(first_name='Dmytro')
-#     serializer_class = StaffSerializer
 
 
 class ComponentInstanceViewSet(ModelViewSet):
@@ -134,47 +111,11 @@ class ComponentListView(SingleTableView):
     template_name = 'ComponentFullList.html'
 
 
-def get_fulllist_with_shipment(request):
-    """ Get full list list of components joined with shipping table
 
-                Example:
+def list_with_shipment(request):
+    components_shipped = ComponentInstance.objects.values_list('component__description',
+                                                               'serial_number', 'date_received',
+                                                               'componentshipment__date_shipped',
+                                                               'componentshipment__shipped_condition')
+    return HttpResponse(components_shipped)
 
-                [
-                    {
-                        Components object
-
-
-                    }
-                ]
-
-        """
-
-    components_received = ComponentInstance.objects.all()
-    components_shipped = ComponentShipment.objects.all()
-    result = []
-    for component_received in components_received:
-        component_received_dict = {}
-
-        component_received_dict['id'] = component_received.id
-        component_received_dict['component'] = {}
-        component_received_dict['component']['description'] = component_received.component.description
-        component_received_dict['component']['part_number'] = component_received.component.part_number
-        component_received_dict['serial_number'] = component_received.serial_number
-        component_received_dict['condition_received'] = component_received.condition_received
-        component_received_dict['date_received'] = component_received.date_received
-        component_received_dict['received_from'] = component_received.received_from
-        component_received_dict['quantity'] = component_received.quantity
-        component_received_dict['unit'] = component_received.unit
-        component_received_dict['shipped'] = {}
-        for component_shipped in components_shipped:
-            if component_shipped.component == component_received_dict['component']:
-                component_received_dict['shipped']['date_shipped'] = component_shipped.date_shipped
-        result.append(component_received_dict)
-    return HttpResponse(result)
-    #     render(
-    #     request,
-    #     'fulllist.html',
-    #     context={
-    #         'components': result
-    #     }
-    # )

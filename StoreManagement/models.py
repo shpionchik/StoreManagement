@@ -66,6 +66,7 @@ from django.urls import reverse
         - condition received (FK -> Status) 
 """
 
+
 class CustomUser(AbstractUser):
     middle_name = models.CharField(max_length=50, null=True, blank=True)
 
@@ -84,7 +85,6 @@ class Warehouse(models.Model):
 class Shelve(models.Model):
     shelve_number = models.PositiveSmallIntegerField(unique=True)
 
-
     class Meta:
         verbose_name = "Shelf"
         verbose_name_plural = "Shelves"
@@ -96,6 +96,7 @@ class Location(models.Model):
 
     def __str__(self):
         return f'{self.store} {"-"} {self.shelve}'
+
 
 class Customer(models.Model):
     customer = models.CharField(max_length=40)
@@ -157,11 +158,13 @@ class Component(models.Model):
         verbose_name = "ComponentAbstract"
         verbose_name_plural = "ComponentsAbstract"
 
+
 class QuantityType(models.Model):
     quantity_type = models.CharField(max_length=30)
 
     def __str__(self):
         return f'{self.quantity_type}'
+
 
 class ComponentInstance(models.Model):
     component = models.ForeignKey('Component', on_delete=models.CASCADE)
@@ -171,8 +174,10 @@ class ComponentInstance(models.Model):
     date_received = models.DateField(default=django.utils.timezone.now)
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='updated_by_user', null=True, blank=True)
-    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='created_by_user', null=True, blank=True)
+    updated_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='updated_by_user', null=True,
+                                   blank=True)
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='created_by_user', null=True,
+                                   blank=True)
     received_from = models.CharField(max_length=30)
     staff_received = models.ForeignKey("StoreStaff", on_delete=models.CASCADE)
     quantity = models.PositiveSmallIntegerField(default=1)
@@ -180,9 +185,8 @@ class ComponentInstance(models.Model):
     location = models.ForeignKey('Location', on_delete=models.CASCADE, null=True, blank=True)
     notes = models.CharField(max_length=50, null=True, blank=True)
 
-
     def __str__(self):
-        return f"{self.component} {'S/N  '} {self.serial_number}"
+        return f"{self.component} {'S/N  '} {self.serial_number} {'received'} {self.date_received}"
 
     class Meta:
         verbose_name = "Component"
@@ -191,23 +195,30 @@ class ComponentInstance(models.Model):
 
 
 class ComponentShipment(models.Model):
-    component = models.ForeignKey('ComponentInstance', on_delete=models.CASCADE)
+    shipped_component = models.OneToOneField('ComponentInstance', on_delete=models.CASCADE)
     date_shipped = models.DateField(default=django.utils.timezone.now)
     shipped_to = models.CharField(max_length=30, null=True, blank=True)
     shipped_condition = models.ForeignKey("Condition", on_delete=models.CASCADE)
     invoice = models.CharField(max_length=30, null=True, blank=True)
     staff_shipped = models.ForeignKey("StoreStaff", on_delete=models.CASCADE, null=True, blank=True)
     scrapped_company = models.ForeignKey('RepairCompany', on_delete=models.CASCADE, null=True, blank=True)
+    shipping_notes = models.CharField(max_length=30, null=True, blank=True)
 
     def __str__(self):
-        return f'{self.component} {self.date_shipped} {self.shipped_to}'
+        return f'{self.shipped_component} {self.date_shipped} {self.shipped_to}'
 
 
 class RepairManagement(models.Model):
-    component = models.ForeignKey('ComponentInstance', on_delete=models.CASCADE)
+    component_for_repair = models.OneToOneField('ComponentInstance', on_delete=models.CASCADE,
+                                             limit_choices_to={'condition_received': '2'}, unique=True)
     repair_company = models.ForeignKey('RepairCompany', on_delete=models.CASCADE)
     date_shipped = models.DateField(default=django.utils.timezone.now)
-    staff = models.ForeignKey('StoreStaff', on_delete=models.CASCADE)
+    staff_shipped = models.ForeignKey('StoreStaff', on_delete=models.CASCADE)
     date_received = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
     condition_received = models.ForeignKey('Condition', on_delete=models.CASCADE, null=True, blank=True)
+    repair_order = models.CharField(max_length=30, null=True, blank=True)
 
+
+class DespatchNote(models.Model):
+    despatch_note = models.CharField(max_length=30, null=True, blank=True)
+    despatched_unit = models.ManyToManyField('ComponentShipment')
