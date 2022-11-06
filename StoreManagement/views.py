@@ -1,5 +1,5 @@
 from itertools import chain
-
+from rest_framework.permissions import IsAuthenticated
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views import View
@@ -14,7 +14,14 @@ from django.views.generic import ListView
 from django_tables2 import SingleTableView
 from .tables import ComponentTable
 import requests
+from django.views.decorators.csrf import requires_csrf_token
 
+def auth(request):
+    return render(
+        request,
+        template_name='auth.html',
+        context={}
+    )
 
 def hello(request):
     return render(
@@ -66,6 +73,7 @@ class StoreStaffView(View):
 
 
 class ComponentInstanceViewSet(ModelViewSet):
+    # permission_classes = (IsAuthenticated,)
     queryset = ComponentInstance.objects.all()
     serializer_class = ComponentInstanceSerializer
 
@@ -76,6 +84,7 @@ def home(request):
 
 
 class USViewSet(ModelViewSet):
+    # permission_classes = (IsAuthenticated,)
     queryset = ComponentInstance.objects.exclude(condition_received=1)
     serializer_class = ComponentInstanceSerializer
 
@@ -86,6 +95,7 @@ def us_list(request):
 
 
 class SVViewSet(ModelViewSet):
+    # permission_classes = (IsAuthenticated,)
     queryset = ComponentInstance.objects.exclude(condition_received=2)
     serializer_class = ComponentInstanceSerializer
 
@@ -96,6 +106,7 @@ def sv_list(request):
 
 
 class ShippedViewSet(ModelViewSet):
+    # permission_classes = (IsAuthenticated,)
     queryset = ComponentShipment.objects.all()
     serializer_class = ShippedListSerializer
 
@@ -117,6 +128,7 @@ def shipped_list(request):
 
 
 class ComponentListView(SingleTableView):
+    # permission_classes = (IsAuthenticated,)
     model = ComponentInstance
     table_class = ComponentTable
     template_name = 'ComponentFullList.html'

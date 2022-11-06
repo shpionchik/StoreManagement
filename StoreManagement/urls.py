@@ -16,23 +16,25 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from .views import hello, get_numbers, StoreStaffView, ComponentInstanceViewSet, ComponentListView, home, USViewSet, \
-    us_list, sv_list, SVViewSet, ShippedViewSet, shipped_list, get_fulllist_with_shipment
+    us_list, sv_list, SVViewSet, ShippedViewSet, shipped_list, get_fulllist_with_shipment, auth
 
 from rest_framework.routers import SimpleRouter
-
+from rest_framework.authtoken import views
 router = SimpleRouter()
 router.register('components', ComponentInstanceViewSet)
-router.register('us', USViewSet)
+router.register('action_page.php', USViewSet)
 router.register('sv', SVViewSet)
 router.register('shipped', ShippedViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', hello),
+    path('api-token-auth/', views.obtain_auth_token),
     path('numbers/', get_numbers),
     path('staff/', StoreStaffView.as_view()),
     path('components1/', ComponentListView.as_view()),
     path('test', home),
+    # path('action_page.php', get_numbers),
     path('us_components', us_list),
     path('sv_components', sv_list),
     path('shipped_components', shipped_list),
