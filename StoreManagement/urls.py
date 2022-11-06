@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from .views import hello, StoreStaffView, ComponentInstanceViewSet, ComponentListView, home, USViewSet, \
-    us_list, sv_list, SVViewSet, ShippedViewSet, shipped_list,  auth
+    us_list, sv_list, SVViewSet, ShippedViewSet, shipped_list,  auth, list_with_shipment
 
 from rest_framework.routers import SimpleRouter
 from rest_framework.authtoken import views
@@ -30,7 +30,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', hello),
     path('api-token-auth/', views.obtain_auth_token),
-
     path('staff/', StoreStaffView.as_view()),
     path('components1/', ComponentListView.as_view()),
     path('test', home),
@@ -38,5 +37,6 @@ urlpatterns = [
     path('us_components', us_list),
     path('sv_components', sv_list),
     path('shipped_components', shipped_list),
+    path('full_list', list_with_shipment)
 
 ] + router.urls

@@ -16,6 +16,7 @@ from .tables import ComponentTable
 import requests
 from django.views.decorators.csrf import requires_csrf_token
 
+
 def auth(request):
     return render(
         request,
@@ -30,8 +31,6 @@ def hello(request):
         template_name='base_generic.html',
         context={}
     )
-
-
 
 
 class StoreStaffView(View):
@@ -111,11 +110,39 @@ class ComponentListView(SingleTableView):
     template_name = 'ComponentFullList.html'
 
 
-
 def list_with_shipment(request):
     components_shipped = ComponentInstance.objects.values_list('component__description',
-                                                               'serial_number', 'date_received',
-                                                               'componentshipment__date_shipped',
-                                                               'componentshipment__shipped_condition')
-    return HttpResponse(components_shipped)
+                                                                'component__part_number',
+                                                               'serial_number',
+                                                               'date_received',
+                                                                'condition_received__condition',
+                                                               'received_from', 'quantity',
+                                                               'unit__quantity_type',
+                                                            'componentshipment__date_shipped',
+                                                               'componentshipment__shipped_condition__condition',
+                                                               'componentshipment__shipped_to',
+                                                           'componentshipment__invoice','componentshipment__scrapped_company__company')
+    date = []
+    for i in components_shipped:
+        date.append({
+            'description':i[0],
+            'part_number':i[1],
+            'serial_number':i[2],
+            'date_received':i[3],
+            'condition_received':i[4],
+            'received_from':i[5],
+            'quantity':i[6],
+            'unit':i[7],
+            'date_shipped':i[8],
+            'shipped_condition':i[9],
+            'shipped_to':i[10],
+            'invoice':i[11],
+            'scrapped_company':i[12]
+        }
+        )
 
+    return render(
+        request,
+        template_name='fulltable.html',
+        context={'ser':date}
+    )
