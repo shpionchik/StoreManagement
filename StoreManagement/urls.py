@@ -22,7 +22,7 @@ from rest_framework.routers import SimpleRouter
 from rest_framework.authtoken import views
 router = SimpleRouter()
 router.register('components', ComponentInstanceViewSet)
-router.register('action_page.php', USViewSet)
+router.register('us', USViewSet)
 router.register('sv', SVViewSet)
 router.register('shipped', ShippedViewSet)
 
