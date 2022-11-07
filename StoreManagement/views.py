@@ -72,7 +72,7 @@ def us_list(request):
 
 class SVViewSet(ModelViewSet):
     # permission_classes = (IsAuthenticated,)
-    queryset = ComponentInstance.objects.exclude(condition_received=1)
+    queryset = ComponentInstance.objects.exclude(condition_received=1).filter(componentshipment__date_shipped=None)
     serializer_class = ComponentInstanceSerializer
 
 
@@ -118,6 +118,8 @@ def list_with_shipment(request):
                                                                 'condition_received__condition',
                                                                'received_from', 'quantity',
                                                                'unit__quantity_type',
+                                                               'certificate_number',
+                                                               'shelf_life',
                                                             'componentshipment__date_shipped',
                                                                'componentshipment__shipped_condition__condition',
                                                                'componentshipment__shipped_to',
@@ -133,16 +135,18 @@ def list_with_shipment(request):
             'received_from':i[5],
             'quantity':i[6],
             'unit':i[7],
-            'date_shipped':i[8],
-            'shipped_condition':i[9],
-            'shipped_to':i[10],
-            'invoice':i[11],
-            'scrapped_company':i[12]
+            'certificate_number':i[8],
+            'shelf_life':i[9],
+            'date_shipped':i[10],
+            'shipped_condition':i[11],
+            'shipped_to':i[12],
+            'invoice':i[13],
+            'scrapped_company':i[14]
         }
         )
 
     return render(
         request,
         template_name='fulltable.html',
-        context={'ser':date}
+        context={'ser': date}
     )

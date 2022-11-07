@@ -183,10 +183,13 @@ class ComponentInstance(models.Model):
     quantity = models.PositiveSmallIntegerField(default=1)
     unit = models.ForeignKey('QuantityType', on_delete=models.CASCADE, default=1)
     location = models.ForeignKey('Location', on_delete=models.CASCADE, null=True, blank=True)
+    certificate_number = models.CharField(max_length=50, null=True, blank=True)
+    shelf_life = models.CharField(max_length=50, null=True, blank=True)
+    us_part_condition = models.CharField(max_length=50, null=True, blank=True)
     notes = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.component} {'S/N  '} {self.serial_number} {'received'} {self.date_received}"
+        return f"{self.component} {'S/N  '} {self.serial_number} {'received condition'} {self.condition_received} {'received date'} {self.date_received}"
 
     class Meta:
         verbose_name = "Component"
@@ -202,7 +205,7 @@ class ComponentShipment(models.Model):
     invoice = models.CharField(max_length=30, null=True, blank=True)
     staff_shipped = models.ForeignKey("StoreStaff", on_delete=models.CASCADE, null=True, blank=True)
     scrapped_company = models.ForeignKey('RepairCompany', on_delete=models.CASCADE, null=True, blank=True)
-    shipping_notes = models.CharField(max_length=30, null=True, blank=True)
+    shipping_order_notes = models.CharField(max_length=30, null=True, blank=True)
 
     def __str__(self):
         return f'{self.shipped_component} {self.date_shipped} {self.shipped_to}'
@@ -222,3 +225,6 @@ class RepairManagement(models.Model):
 class DespatchNote(models.Model):
     despatch_note = models.CharField(max_length=30, null=True, blank=True)
     despatched_unit = models.ManyToManyField('ComponentShipment')
+    sizes = models.CharField(max_length=30, null=True, blank=True)
+    weight = models.CharField(max_length=30, null=True, blank=True)
+    notes = models.CharField(max_length=30, null=True, blank=True)

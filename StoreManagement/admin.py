@@ -33,7 +33,8 @@ class ComponentResource(resources.ModelResource):
         # exclude = ('id',)
         import_id_fields = ['id']
         fields = ('id', 'component', 'serial_number', 'quantity', 'received_from', 'staff_received', 'date_received',
-                  'condition_received', 'quantity', 'unit', 'location')
+                  'condition_received', 'quantity', 'unit', 'location', 'certificate_number', 'shelf_life',
+                  'us_part_condition')
 
     # def get_import_fields(self):
     #     return [self.fields[f] for f in ['description', 'part_number']]
@@ -64,14 +65,14 @@ class DespatchNoteChangeList(ChangeList):
                  model_admin,
                  sortable_by,
                  search_help_text): super(DespatchNoteChangeList, self).__init__(request, model, list_display,
-                                                                                      list_display_links, list_filter,
-                                                                                      date_hierarchy, search_fields,
-                                                                                      list_select_related,
-                                                                                      list_per_page, list_max_show_all,
-                                                                                      list_editable, model_admin,
-                                                                                      sortable_by, search_help_text)
+                                                                                 list_display_links, list_filter,
+                                                                                 date_hierarchy, search_fields,
+                                                                                 list_select_related,
+                                                                                 list_per_page, list_max_show_all,
+                                                                                 list_editable, model_admin,
+                                                                                 sortable_by, search_help_text)
 
-    list_display = ['despatch_note', 'despatched_unit']
+    list_display = ['despatch_note', 'despatched_unit', 'sizes', 'weight', 'notes']
     list_display_links = ['despatch_note']
     list_editable = ['despatched_unit']
 
@@ -88,9 +89,8 @@ admin.site.register(DespatchNote, DespatchNoteAdmin)
 
 
 class ComponentShipmentAdmin(admin.ModelAdmin):
-
     list_display = ('shipped_component', 'date_shipped', 'shipped_to', 'shipped_condition', 'invoice', 'staff_shipped',
-                    'scrapped_company', 'shipping_notes')
+                    'scrapped_company', 'shipping_order_notes')
 
 
 admin.site.register(ComponentShipment, ComponentShipmentAdmin)
@@ -141,7 +141,8 @@ admin.site.register(Warehouse, WarehouseAdmin)
 
 class ComponentInstanceAdmin(ImportExportModelAdmin):
     list_display = ['id', 'component', 'serial_number', 'quantity', 'received_from', 'date_received', 'staff_received',
-                    'condition_received', 'quantity', 'unit', 'location']
+                    'condition_received', 'quantity', 'unit', 'location', 'certificate_number', 'shelf_life',
+                    'us_part_condition']
     resource_classes = [ComponentResource]
 
 

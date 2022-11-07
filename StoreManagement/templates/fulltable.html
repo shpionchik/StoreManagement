@@ -40,12 +40,14 @@
                 <td class="gray">CONDITION</td>
                 <td class="gray">RECEIVED FROM</td>
                 <td class="gray">QUANTITY</td>
-                  <td class="gray">UNIT</td>
+                <td class="gray">UNIT</td>
+                <td class="gray">CERTIFICATE NUMBER</td>
+                <td class="gray">SHELF LIFE</td>
                   <td class="gray">DATE SHIPPED</td>
                   <td class="gray">SHIPPED CONDITION</td>
                   <td class="gray">SHIPPED TO</td>
                   <td class="gray">INVOICE</td>
-                  <td class="gray">SCRAPPED COMPANY</td>
+
             </tr>
 
             {% for i in ser %}
@@ -58,11 +60,12 @@
                 <td>{{i.received_from}}</td>
                 <td>{{i.quantity}}</td>
                  <td>{{i.unit}}</td>
+                 <td>{{i.certificate_number}}</td>
+                 <td>{{i.shelf_life}}</td>
                  <td>{{i.date_shipped}}</td>
                  <td>{{i.shipped_condition}}</td>
                  <td>{{i.shipped_to}}</td>
                   <td>{{i.invoice}}</td>
-                  <td>{{i.scrapped_company}}</td>
             </tr>
             {% endfor %}
         </table>

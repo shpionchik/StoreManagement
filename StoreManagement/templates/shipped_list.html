@@ -41,7 +41,7 @@
             <td class="gray">DATE SHIPPED</td>
             <td class="gray">SHIPPED CONDITION</td>
             <td class="gray">SHIPPED TO</td>
-            <td class="gray">SCRAPPED COMPANY (if applicable)</td>
+            <td class="gray">SHIPPING ORDER/NOTES</td>
         </tr>
 
         {% for i in response %}
@@ -52,7 +52,7 @@
             <td>{{i.date_shipped}}</td>
             <td>{{i.shipped_condition.condition}}</td>
             <td>{{i.shipped_to}}</td>
-            <td>{{i.scrapped_company.company}}</td>
+            <td>{{i.shipping_order_notes}}</td>
 
         </tr>
         {% endfor %}

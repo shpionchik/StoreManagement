@@ -37,9 +37,10 @@
                 <td class="gray">PART NUMBER</td>
                 <td class="gray">SERIAL NUMBER</td>
                 <td class="gray">DATE RECEIVED</td>
-                <td class="gray">CONDITION</td>
+                <td class="gray">CONDITION RECEIVED</td>
                 <td class="gray">RECEIVED FROM</td>
-                <td class="gray">LOCATION</td>
+                <td class="gray">CERTIFICATE NUMBER</td>
+                <td class="gray">SHELF LIFE</td>
             </tr>
 
             {% for i in response %}
@@ -50,7 +51,8 @@
                 <td>{{i.date_received}}</td>
                 <td>{{i.condition_received.condition}}</td>
                 <td>{{i.received_from}}</td>
-                <td>{{i.location.store.name}}</td>
+                <td>{{i.certificate_number}}</td>
+                 <td>{{i.shelf_life}}</td>
             </tr>
             {% endfor %}
         </table>
