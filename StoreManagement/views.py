@@ -61,7 +61,7 @@ def home(request):
 
 class USViewSet(ModelViewSet):
     # permission_classes = (IsAuthenticated,)
-    queryset = ComponentInstance.objects.filter(condition_received=1)
+    queryset = ComponentInstance.objects.filter(condition_received=1).filter(componentshipment__date_shipped=None)
     serializer_class = ComponentInstanceSerializer
 
 
