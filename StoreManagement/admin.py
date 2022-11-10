@@ -34,7 +34,7 @@ class ComponentResource(resources.ModelResource):
         import_id_fields = ['id']
         fields = ('id', 'component', 'serial_number', 'quantity', 'received_from', 'staff_received', 'date_received',
                   'condition_received', 'quantity', 'unit', 'location', 'certificate_number', 'shelf_life',
-                  'us_part_condition')
+                  'us_part_condition', 'certificate')
 
     # def get_import_fields(self):
     #     return [self.fields[f] for f in ['description', 'part_number']]
@@ -142,7 +142,7 @@ admin.site.register(Warehouse, WarehouseAdmin)
 class ComponentInstanceAdmin(ImportExportModelAdmin):
     list_display = ['id', 'component', 'serial_number', 'quantity', 'received_from', 'date_received', 'staff_received',
                     'condition_received', 'quantity', 'unit', 'location', 'certificate_number', 'shelf_life',
-                    'us_part_condition']
+                    'us_part_condition', 'certificate']
     resource_classes = [ComponentResource]
 
 

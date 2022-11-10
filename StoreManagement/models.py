@@ -187,7 +187,7 @@ class ComponentInstance(models.Model):
     shelf_life = models.CharField(max_length=50, null=True, blank=True)
     us_part_condition = models.CharField(max_length=50, null=True, blank=True)
     notes = models.CharField(max_length=50, null=True, blank=True)
-    certificate = models. FileField(upload_to='certificate', blank=True, null=True)
+    certificate = models. FileField(upload_to='certificate/', blank=True, null=True)
 
 
     def __str__(self):

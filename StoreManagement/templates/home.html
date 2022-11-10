@@ -41,6 +41,7 @@
                 <td class="gray">RECEIVED FROM</td>
                 <td class="gray">CERTIFICATE NUMBER</td>
                 <td class="gray">SHELF LIFE</td>
+                <td class="gray">CERTIFICATE</td>
             </tr>
 
             {% for i in response %}
@@ -53,7 +54,9 @@
                 <td>{{i.received_from}}</td>
                 <td>{{i.certificate_number}}</td>
                  <td>{{i.shelf_life}}</td>
-            </tr>
+<!--               <td> <button onclick="http://127.0.0.1:8000/media/certificate/9._214C50-2BY151222.pdf">certificate</button></td>-->
+                 <td><request.build_absolute_uri(i.certificate.url)></td>
+             </tr>
             {% endfor %}
         </table>
     <script>

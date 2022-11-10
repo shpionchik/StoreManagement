@@ -14,12 +14,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.conf.urls.static import static
+from django.conf import settings
+from django.views.static import serve
 from django.urls import path, include
 from .views import hello, StoreStaffView, ComponentInstanceViewSet, ComponentListView, home, USViewSet, \
     us_list, sv_list, SVViewSet, ShippedViewSet, shipped_list,  auth, list_with_shipment
 
 from rest_framework.routers import SimpleRouter
 from rest_framework.authtoken import views
+
 router = SimpleRouter()
 router.register('components', ComponentInstanceViewSet)
 router.register('us', USViewSet)
@@ -40,3 +44,6 @@ urlpatterns = [
     path('full_list', list_with_shipment)
 
 ] + router.urls
+
+if settings.DEBUG:
+    urlpatterns +=static(settings.MEDIA_url, document_root=settings.MEDIA_ROOT)
