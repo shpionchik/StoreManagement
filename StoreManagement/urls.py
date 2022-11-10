@@ -19,7 +19,7 @@ from django.conf import settings
 from django.views.static import serve
 from django.urls import path, include
 from .views import hello, StoreStaffView, ComponentInstanceViewSet, ComponentListView, home, USViewSet, \
-    us_list, sv_list, SVViewSet, ShippedViewSet, shipped_list,  auth, list_with_shipment
+    us_list, sv_list, SVViewSet, ShippedViewSet, shipped_list, auth, list_with_shipment
 
 from rest_framework.routers import SimpleRouter
 from rest_framework.authtoken import views
@@ -31,19 +31,21 @@ router.register('sv', SVViewSet)
 router.register('shipped', ShippedViewSet)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', hello),
-    path('api-token-auth/', views.obtain_auth_token),
-    path('staff/', StoreStaffView.as_view()),
-    path('components1/', ComponentListView.as_view()),
-    path('test', home),
-    # path('action_page.php', get_numbers),
-    path('us_components', us_list),
-    path('sv_components', sv_list),
-    path('shipped_components', shipped_list),
-    path('full_list', list_with_shipment)
+                  path('admin/', admin.site.urls),
+                  path('', hello),
+                  path('api-token-auth/', views.obtain_auth_token),
+                  path('staff/', StoreStaffView.as_view()),
+                  path('components1/', ComponentListView.as_view()),
+                  path('test', home),
+                  # path('action_page.php', get_numbers),
+                  path('us_components', us_list),
+                  path('sv_components', sv_list),
+                  path('shipped_components', shipped_list),
+                  path('full_list', list_with_shipment),
 
-] + router.urls
+              ] + router.urls
 
 if settings.DEBUG:
-    urlpatterns +=static(settings.MEDIA_url, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )
