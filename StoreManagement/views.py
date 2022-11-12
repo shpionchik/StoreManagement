@@ -14,8 +14,9 @@ from django.views.generic import ListView
 from django_tables2 import SingleTableView
 from .tables import ComponentTable
 import requests
-from django.views.decorators.csrf import requires_csrf_token
-
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 def auth(request):
     return render(
@@ -49,44 +50,44 @@ class StoreStaffView(View):
 
 
 class ComponentInstanceViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = ComponentInstance.objects.all()
     serializer_class = ComponentInstanceSerializer
 
-
+@permission_classes([IsAuthenticated])
 def home(request):
     response = requests.get('https://nordicstore.herokuapp.com/components/').json()
     return render(request, 'home.html', {'response': response})
 
 
 class USViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = ComponentInstance.objects.filter(condition_received=1).filter(componentshipment__date_shipped=None)
     serializer_class = ComponentInstanceSerializer
 
-
+@permission_classes([IsAuthenticated])
 def us_list(request):
     response = requests.get('https://nordicstore.herokuapp.com/us/').json()
     return render(request, 'home.html', {'response': response})
 
 
 class SVViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = ComponentInstance.objects.exclude(condition_received=1).filter(componentshipment__date_shipped=None)
     serializer_class = ComponentInstanceSerializer
 
-
+@permission_classes([IsAuthenticated])
 def sv_list(request):
     response = requests.get('https://nordicstore.herokuapp.com/sv/').json()
     return render(request, 'home.html', {'response': response})
 
 
 class ShippedViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = ComponentShipment.objects.all()
     serializer_class = ShippedListSerializer
 
-
+@permission_classes([IsAuthenticated])
 def shipped_list(request):
     response = requests.get('https://nordicstore.herokuapp.com/shipped/').json()
     return render(request, 'shipped_list.html', {'response': response})
@@ -149,4 +150,11 @@ def list_with_shipment(request):
         request,
         template_name='fulltable.html',
         context={'ser': date}
+    )
+
+def tryy(request):
+    return render(
+        request,
+        template_name='test.html',
+        context={}
     )

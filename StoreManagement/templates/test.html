@@ -1,13 +1,6 @@
-{# tutorial/templates/tutorial/people.html #}
-{% load render_table from django_tables2 %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <style>
-       .sr-only {
+<style>
+  .sr-only {
   position: absolute;
   top: -30em;
 }
@@ -69,13 +62,6 @@ table.sortable th[aria-sort="ascending"] span::after {
   font-size: 100%;
   top: 0;
 }
-.gray{
-                background-color: gray;
-                font-weight: normal;
-                word-wrap: break-word
-                text-align: left;
-                width: 20 cm;
-            }
 
 table.show-unsorted-icon th:not([aria-sort]) button span::after {
   content: "♢";
@@ -115,66 +101,73 @@ table.sortable th:not([aria-sort]) button:hover span::after {
   font-size: 100%;
   top: 0;
 }
+
 </style>
-</head>
-<body>
-     <table id="tblData" class="sortable">
-         <thead>
-            <tr>
-                <th class="gray">
-                    <button>
-                    Description
-                    <span aria-hidden="true"></span>
-                    </button>
-                </th>
-                <th class="gray">
-                    <button>
-                    Part Number
-                        <span aria-hidden="true"></span>
-                    </button>
-                </th>
-                <th class="gray">
-                    <button>
-                    Serial Number
-                    <span aria-hidden="true"></span>
-                    </button>
-                </th>
-                <th class="gray">
-                    <button>
-                    Date received
-                        <span aria-hidden="true"></span>
-                    </button>
-                </th>
-                <th class="gray">
-                    <button>
-                    Condition received
-                    <span aria-hidden="true"></span>
-                    </button>
-                </th>
-                <th class="gray">
-                    <button>
-                    Received from
-                    <span aria-hidden="true"></span>
-                    </button>
-                </th>
-                <th class="gray">
-                     <button>
-                     Certificate №
-                     <span aria-hidden="true"></span>
-                    </button>
-                </th>
-                <th class="gray">
-                     <button>
-                    Shelf life
-                     <span aria-hidden="true"></span>
-                    </button>
-                </th>
-                <th class="gray">Certificate</th>
-            </tr>
-         </thead>
-         <tbody>
-         <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for..." title="Type in a name">
-            {% for i in response %}
+<table class="sortable">
+  <caption>
+    Students currently enrolled in WAI-ARIA 101
+    <span class="sr-only">, column headers with buttons are sortable.</span>
+  </caption>
+  <thead>
+    <tr>
+      <th>
+        <button>
+          Description
+          <span aria-hidden="true"></span>
+        </button>
+      </th>
+      <th aria-sort="ascending">
+        <button>
+          Part Number
+          <span aria-hidden="true"></span>
+        </button>
+      </th>
+      <th>
+        <button>
+          Serial Number
+          <span aria-hidden="true"></span>
+        </button>
+      </th>
+      <th>
+        <button>
+          Date Received
+          <span aria-hidden="true"></span>
+        </button>
+      </th>
+      <th>
+        <button>
+          Condition Received
+          <span aria-hidden="true"></span>
+        </button>
+      </th>
+      <th>
+        <button>
+          Received from
+          <span aria-hidden="true"></span>
+        </button>
+      </th>
+      <th>
+        <button>
+          Certificate Number
+          <span aria-hidden="true"></span>
+        </button>
+      </th>
+      <th>
+        <button>
+          Shelf Life
+          <span aria-hidden="true"></span>
+        </button>
+      </th>
+      <th>
+        <button>
+          Certificate
+          <span aria-hidden="true"></span>
+        </button>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for i in response %}
              <tr>
                 <td>{{i.component.description}}</td>
                 <td>{{i.component.part_number}}</td>
@@ -184,15 +177,19 @@ table.sortable th:not([aria-sort]) button:hover span::after {
                 <td>{{i.received_from}}</td>
                 <td>{{i.certificate_number}}</td>
                  <td>{{i.shelf_life}}</td>
-                 <td><a href="{{ i.certificate }}">Download</a></td>
+               <td> <button onclick='{{i.certificate.file.url}}'>certificate</button></td>
+<!--                 <td><link href ='{{ i.certificate.url }}'></td>-->
              </tr>
             {% endfor %}
-         </tbody>
-        </table>
-        <button onclick="exportTableToExcel('tblData', 'members-data')">Export Table Data To Excel File</button>
-
-     <script>
+  </tbody>
+</table>
+<script>
   /*
+ *   This content is licensed according to the W3C Software License at
+ *   https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
+ *
+ *   File:   sortable-table.js
+ *
  *   Desc:   Adds sorting to a HTML data table that implements ARIA Authoring Practices
  */
 
@@ -356,65 +353,3 @@ window.addEventListener('load', function () {
 });
 
 </script>
-
-<script>
-function exportTableToExcel(tableID, filename = ''){
-    var downloadLink;
-    var dataType = 'application/vnd.ms-excel';
-    var tableSelect = document.getElementById(tableID);
-    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
-
-    // Specify file name
-    filename = filename?filename+'.xls':'excel_data.xls';
-
-    // Create download link element
-    downloadLink = document.createElement("a");
-
-    document.body.appendChild(downloadLink);
-
-    if(navigator.msSaveOrOpenBlob){
-        var blob = new Blob(['\ufeff', tableHTML], {
-            type: dataType
-        });
-        navigator.msSaveOrOpenBlob( blob, filename);
-    }else{
-        // Create a link to the file
-        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
-
-        // Setting the file name
-        downloadLink.download = filename;
-
-        //triggering the function
-        downloadLink.click();
-    }
-}
-    </script>
-     <script>
-function myFunction() {
-  var input, filter, table, tr, td, i;
-  input = document.getElementById("myInput");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("tblData");
-  var rows = table.getElementsByTagName("tr");
-  for (i = 0; i < rows.length; i++) {
-    var cells = rows[i].getElementsByTagName("td");
-    var j;
-    var rowContainsFilter = false;
-    for (j = 0; j < cells.length; j++) {
-      if (cells[j]) {
-        if (cells[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
-          rowContainsFilter = true;
-          continue;
-        }
-      }
-    }
-    if (! rowContainsFilter) {
-      rows[i].style.display = "none";
-    } else {
-      rows[i].style.display = "";
-    }
-  }
-}
-</script>
-</body>
-</html>
