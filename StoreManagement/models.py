@@ -149,7 +149,7 @@ class Condition(models.Model):
 
 class Component(models.Model):
     description = models.CharField(max_length=30)
-    part_number = models.CharField(max_length=50)
+    part_number = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return f"{self.description} {'P/N '}{self.part_number}"
