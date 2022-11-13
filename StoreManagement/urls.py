@@ -32,12 +32,12 @@ router.register('shipped', ShippedViewSet)
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
-                  path('', hello),
-                  path('api-token-auth/', views.obtain_auth_token),
+                  path('', auth, name='login'),
+                  # path('api-token-auth/', views.obtain_auth_token),
                   path('staff/', StoreStaffView.as_view()),
                   path('components1/', ComponentListView.as_view()),
-                  path('test', home),
-                  # path('action_page.php', get_numbers),
+                  # path('test', home),
+                  path('action_page.php/',hello),
                   path('us_components', us_list),
                   path('sv_components', sv_list),
                   path('shipped_components', shipped_list),
