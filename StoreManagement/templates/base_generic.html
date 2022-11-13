@@ -37,7 +37,6 @@
         </form>
 <img src="{% static 'media/images/1.jpg' %}" width="100%" height="auto" />
   <div class="container-fluid">
-
     <div class="row">
       <div class="col-sm-2">
       {% block sidebar %}
@@ -51,6 +50,11 @@
      {% endblock %}
       </div>
       <div class="col-sm-10 ">
+            {% if messages %}
+            {% for message in messages%}
+                {{message}}
+            {% endfor %}
+        {% endif %}
       {% block content %}{% endblock %}
       </div>
     </div>
