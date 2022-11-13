@@ -137,7 +137,7 @@ class ComponentListView(SingleTableView):
     table_class = ComponentTable
     template_name = 'ComponentFullList.html'
 
-
+@csrf_protect
 def list_with_shipment(request):
     components_shipped = ComponentInstance.objects.values_list('component__description',
                                                                'component__part_number',
