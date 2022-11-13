@@ -33,7 +33,7 @@ router.register('shipped', ShippedViewSet)
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('', auth, name='login'),
-                  # path('api-token-auth/', views.obtain_auth_token),
+                  path('api-token-auth/', views.obtain_auth_token),
                   path('staff/', StoreStaffView.as_view()),
                   path('components1/', ComponentListView.as_view()),
                   # path('test', home),
@@ -42,7 +42,10 @@ urlpatterns = [
                   path('sv_components', sv_list),
                   path('shipped_components', shipped_list),
                   path('full_list', list_with_shipment),
-                  path('hhh', tryy)
+                  path('hhh', tryy.as_view()),
+
+
+
 
               ] + router.urls
 

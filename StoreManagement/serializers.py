@@ -2,7 +2,8 @@ from rest_framework.serializers import ModelSerializer, HyperlinkedModelSerializ
 from .models import StoreStaff, ComponentInstance, Component, Condition, ComponentShipment, Location, Warehouse,\
     RepairCompany
 from rest_framework.fields import SerializerMethodField
-from rest_framework import serializers
+
+
 
 
 class StaffSerializer(ModelSerializer):
@@ -94,3 +95,4 @@ class ShippedListSerializer(ModelSerializer):
     class Meta:
         model = ComponentShipment
         fields = '__all__'
+
