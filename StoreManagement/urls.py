@@ -19,7 +19,7 @@ from django.conf import settings
 from django.views.static import serve
 from django.urls import path, include
 from .views import hello, StoreStaffView, ComponentInstanceViewSet, ComponentListView, home, USViewSet, \
-    us_list, sv_list, SVViewSet, ShippedViewSet, shipped_list, auth, list_with_shipment, tryy
+    us_list, sv_list, SVViewSet, ShippedViewSet, shipped_list, auth, list_with_shipment
 
 from rest_framework.routers import SimpleRouter
 from rest_framework.authtoken import views
@@ -42,7 +42,6 @@ urlpatterns = [
                   path('sv_components', sv_list),
                   path('shipped_components', shipped_list),
                   path('full_list', list_with_shipment),
-                  path('hhh', tryy.as_view()),
 
 
 

@@ -1,5 +1,4 @@
-{# tutorial/templates/tutorial/people.html #}
-{% load render_table from django_tables2 %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,7 +32,7 @@ table.sortable th:nth-child(5) {
 }
 
 table.sortable th button {
-  position: absolute;
+  position: sticky;
   padding: 4px;
   margin: 1px;
   font-size: 100%;
@@ -119,6 +118,8 @@ table.sortable th:not([aria-sort]) button:hover span::after {
 </head>
 
 <body>
+<nav>
+<a href="/action_page.php/">Home Page</a> |
  <form action="" method=POST>
             {% csrf_token%}
 
@@ -162,6 +163,8 @@ table.sortable th:not([aria-sort]) button:hover span::after {
                     <span aria-hidden="true"></span>
                     </button>
                 </th>
+                <th class="gray">Quantity</th>
+                <th class="gray">Unit</th>
                 <th class="gray">
                      <button>
                      Certificate №
@@ -187,6 +190,8 @@ table.sortable th:not([aria-sort]) button:hover span::after {
                 <td>{{i.date_received}}</td>
                 <td>{{i.condition_received.condition}}</td>
                 <td>{{i.received_from}}</td>
+                 <td>{{i.quantity}}</td>
+                 <td>{{i.unit}</td>
                 <td>{{i.certificate_number}}</td>
                  <td>{{i.shelf_life}}</td>
                  <td><a href="{{ i.certificate }}">Download</a></td>

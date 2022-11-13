@@ -1,21 +1,38 @@
-{% extends 'base_generic.html' %}
-{% block content %}
+
+
 
 <!DOCTYPE html>
-
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<style>
+   body {
+    background: url({% static 'media/images/1.jpg' %}) no-repeat;
+    -moz-background-size: 100%; /* Firefox 3.6+ */
+    -webkit-background-size: 100%; /* Safari 3.1+ и Chrome 4.0+ */
+    -o-background-size: 100%; /* Opera 9.6+ */
+    background-size: 100%; /* Современные браузеры */
+   }
+  </style>
 <body>
-
+{% block content%}
+    <div>
+            {% if messages %}
+            {% for message in messages%}
+                {{message}}
+             {% endfor %}
+                {% endif %}
+        </div>
+<!--        <img src="{% static 'media/images/1.jpg' %}" width="100%" height="auto" />-->
     <h1>Login</h1>
         <br/>
         <form action="" method=POST>
             {% csrf_token%}
         <form>
-  <div class="mb-3">
+  <div class="mb-3" Id="centerLayer">
     <label for="exampleInputEmail1" class="form-label">Username</label>
     <input type="text" class="form-control" name="username" aria-describedby="emailHelp">
   </div>
@@ -24,10 +41,10 @@
     <input type="password" class="form-control" name="password">
   </div>
 
-
             <input type="submit" value="Submit" class="btn btn-secondary">
         </form>
     <br/><br/>
-{% endblock%}
+            {% endblock %}
+
 </body>
 </html>

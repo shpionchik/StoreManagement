@@ -180,8 +180,3 @@ def list_with_shipment(request):
         context={'ser': date}
     )
 
-
-class tryy(TemplateView):
-    permission_classes = (IsAuthenticated,)
-    template_name = 'test.html'
-    response = requests.get('https://nordicstore.herokuapp.com/shipped/').json()
