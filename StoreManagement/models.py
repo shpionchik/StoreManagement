@@ -201,6 +201,8 @@ class ComponentInstance(models.Model):
 
 class ComponentShipment(models.Model):
     shipped_component = models.OneToOneField('ComponentInstance', on_delete=models.CASCADE)
+    shipped_quantity = models.PositiveSmallIntegerField(default=1)
+    unit = models.ForeignKey('QuantityType', on_delete=models.CASCADE, default=1)
     date_shipped = models.DateField(default=django.utils.timezone.now)
     shipped_to = models.CharField(max_length=30, null=True, blank=True)
     shipped_condition = models.ForeignKey("Condition", on_delete=models.CASCADE)
