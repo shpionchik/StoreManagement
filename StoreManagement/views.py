@@ -57,7 +57,7 @@ class ComponentInstanceViewSet(ModelViewSet):
     queryset = ComponentInstance.objects.all()
     serializer_class = ComponentInstanceSerializer
 
-@requires_csrf_token
+@permission_classes([IsAuthenticated])
 def home(request):
     response = requests.get('https://nordicstore.herokuapp.com/components/').json()
     return render(request, 'home.html', {'response': response})
@@ -68,7 +68,7 @@ class USViewSet(ModelViewSet):
     queryset = ComponentInstance.objects.filter(condition_received=1).filter(componentshipment__date_shipped=None)
     serializer_class = ComponentInstanceSerializer
 
-@requires_csrf_token
+@permission_classes([IsAuthenticated])
 def us_list(request):
     response = requests.get('https://nordicstore.herokuapp.com/us/').json()
     return render(request, 'home.html', {'response': response})
@@ -79,7 +79,7 @@ class SVViewSet(ModelViewSet):
     queryset = ComponentInstance.objects.exclude(condition_received=1).filter(componentshipment__date_shipped=None)
     serializer_class = ComponentInstanceSerializer
 
-@requires_csrf_token
+@permission_classes([IsAuthenticated])
 def sv_list(request):
     response = requests.get('https://nordicstore.herokuapp.com/sv/').json()
     return render(request, 'home.html', {'response': response})
@@ -90,7 +90,7 @@ class ShippedViewSet(ModelViewSet):
     queryset = ComponentShipment.objects.all()
     serializer_class = ShippedListSerializer
 
-@requires_csrf_token
+@permission_classes([IsAuthenticated])
 def shipped_list(request):
     response = requests.get('https://nordicstore.herokuapp.com/shipped/').json()
     return render(request, 'shipped_list.html', {'response': response})
