@@ -48,7 +48,7 @@ def auth(request):
           )
 
 
-@csrf_protect
+
 def hello(request):
     return render(
         request=request,
@@ -73,48 +73,47 @@ class StoreStaffView(View):
 
 
 class ComponentInstanceViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     queryset = ComponentInstance.objects.all()
     serializer_class = ComponentInstanceSerializer
 
 
-@csrf_protect
+
 def home(request):
     response = requests.get('https://nordicstore.herokuapp.com/components/').json()
     return render(request, 'home.html', {'response': response})
 
 
 class USViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     queryset = ComponentInstance.objects.filter(condition_received=1).filter(componentshipment__date_shipped=None)
     serializer_class = ComponentInstanceSerializer
 
 
-@csrf_protect
+
 def us_list(request):
     response = requests.get('https://nordicstore.herokuapp.com/us/').json()
     return render(request, 'home.html', {'response': response})
 
 
 class SVViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     queryset = ComponentInstance.objects.exclude(condition_received=1).filter(componentshipment__date_shipped=None)
     serializer_class = ComponentInstanceSerializer
 
 
-@csrf_protect
 def sv_list(request):
     response = requests.get('https://nordicstore.herokuapp.com/sv/').json()
     return render(request, 'home.html', {'response': response})
 
 
 class ShippedViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     queryset = ComponentShipment.objects.all()
     serializer_class = ShippedListSerializer
 
 
-@csrf_protect
+
 def shipped_list(request):
     response = requests.get('https://nordicstore.herokuapp.com/shipped/').json()
     return render(request, 'shipped_list.html', {'response': response})
@@ -137,7 +136,7 @@ class ComponentListView(SingleTableView):
     table_class = ComponentTable
     template_name = 'ComponentFullList.html'
 
-@csrf_protect
+
 def list_with_shipment(request):
     components_shipped = ComponentInstance.objects.values_list('component__description',
                                                                'component__part_number',
