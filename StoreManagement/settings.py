@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'import_export',
 
     'StoreManagement',
-    'rest_framework.authtoken',
+    # 'rest_framework.authtoken',
 
 ]
 
