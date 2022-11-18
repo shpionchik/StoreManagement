@@ -119,8 +119,8 @@ table.sortable th:not([aria-sort]) button:hover span::after {
 
 <body>
 <nav>
-<a href="/action_page.php/">Home Page</a> |
- <form action="" method=POST>
+<a href="/action_page.php/">Home Page</a>
+ <form action="" method=post>
             {% csrf_token %}
 
         </form>
@@ -145,44 +145,57 @@ table.sortable th:not([aria-sort]) button:hover span::after {
                     <span aria-hidden="true"></span>
                     </button>
                 </th>
-                 <th class="gray">Shipped quantity</th>
-                 <th class="gray">Unit</th>
                 <th class="gray">
                     <button>
-                    Date shipped
+                    Date received
                         <span aria-hidden="true"></span>
                     </button>
                 </th>
                 <th class="gray">
                     <button>
-                    Shipped Condition
+                    Condition received
                     <span aria-hidden="true"></span>
                     </button>
                 </th>
                 <th class="gray">
                     <button>
-                    Shipped to
+                    Received from
                     <span aria-hidden="true"></span>
                     </button>
                 </th>
-                <th class="gray">Shipping Order/Notes</th>
-
-
+                <th class="gray">Quantity</th>
+                <th class="gray">Unit</th>
+                <th class="gray">
+                     <button>
+                     Certificate №
+                     <span aria-hidden="true"></span>
+                    </button>
+                </th>
+                <th class="gray">
+                     <button>
+                    Shelf life
+                     <span aria-hidden="true"></span>
+                    </button>
+                </th>
+                <th class="gray">Certificate</th>
             </tr>
          </thead>
          <tbody>
          <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for..." title="Type in a name">
+
             {% for i in response %}
              <tr>
-                 <td>{{i.shipped_component.component.description}}</td>
-                 <td>{{i.shipped_component.component.part_number}}</td>
-                 <td>{{i.shipped_component.serial_number}}</td>
-                 <td>{{i.shipped_quantity}}</td>
-                 <td>{{i.unit.quantity_type}}</td>
-                 <td>{{i.date_shipped}}</td>
-                 <td>{{i.shipped_condition.condition}}</td>
-                 <td>{{i.shipped_to}}</td>
-                 <td>{{i.shipping_order_notes}}</td>
+                <td>{{i.component.description}}</td>
+                <td>{{i.component.part_number}}</td>
+                <td>{{i.serial_number}}</td>
+                <td>{{i.date_received}}</td>
+                <td>{{i.condition_received.condition}}</td>
+                <td>{{i.received_from}}</td>
+                 <td>{{i.quantity}}</td>
+                 <td>{{i.unit}}</td>
+                <td>{{i.certificate_number}}</td>
+                 <td>{{i.shelf_life}}</td>
+                 <td><a href="{{ i.certificate }}">Download</a></td>
              </tr>
             {% endfor %}
          </tbody>
@@ -416,4 +429,3 @@ function myFunction() {
 </script>
 </body>
 </html>
-

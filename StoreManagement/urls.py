@@ -18,8 +18,8 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.views.static import serve
 from django.urls import path, include
-from .views import hello, StoreStaffView, ComponentInstanceViewSet, ComponentListView, home, USViewSet, \
-    us_list, sv_list, SVViewSet, ShippedViewSet, shipped_list, auth, list_with_shipment
+from .views import hello, ComponentInstanceViewSet, ComponentListView, home, USViewSet, \
+    us_list, sv_list, SVViewSet, ShippedViewSet, shipped_list, list_with_shipment, create_receiving
 
 from rest_framework.routers import SimpleRouter
 from rest_framework.authtoken import views
@@ -32,16 +32,18 @@ router.register('shipped', ShippedViewSet)
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
-                  path('', auth, name='login'),
+                  path('', home, name='home'),
+                  path('home', home, name='home'),
+                  path('', include('django.contrib.auth.urls')),
                   path('api-token-auth/', views.obtain_auth_token),
-                  path('staff/', StoreStaffView.as_view()),
                   path('components1/', ComponentListView.as_view()),
-                  # path('test', home),
+                  path('test', home),
                   path('action_page.php/',hello, name='start-page'),
                   path('us_components', us_list),
                   path('sv_components', sv_list),
                   path('shipped_components', shipped_list),
                   path('full_list', list_with_shipment),
+                  path('receiving', create_receiving, name='adding received item')
 
 
 

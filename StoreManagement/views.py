@@ -7,6 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
+
+from . import settings
 from .models import StoreStaff, ComponentInstance, ComponentShipment
 from django.views.generic import TemplateView
 import json
@@ -19,7 +21,8 @@ from django.views.generic import ListView
 from django_tables2 import SingleTableView
 from .tables import ComponentTable
 import requests
-
+from django.contrib.auth.decorators import login_required
+from .forms import ReceivedForm
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
@@ -29,47 +32,48 @@ from rest_framework import views
 from rest_framework.response import Response
 
 
-def auth(request):
-    if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('action_page.php/')
-        else:
-            messages.success(request, ('Error, try again'))
-            return redirect('login')
-    else:
-        return render(
-            request,
-            template_name='login.html',
-            context={}
-          )
-
+#
+# def auth(request):
+#     if request.method == "POST":
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             login(request, user)
+#             return redirect('action_page.php/')
+#         else:
+#             messages.success(request, ('Error, try again'))
+#             return redirect('login')
+#     else:
+#         return render(
+#             request,
+#             template_name='loginold.html',
+#             context={}
+#           )
 
 
 def hello(request):
     return render(
         request=request,
-        template_name='base_generic.html',
+        template_name='home.html',
         context={}
     )
 
 
-class StoreStaffView(View):
-    def get(self, *args, **kwargs):
-        staff = StoreStaff.objects.all()
-
-        date = []
-        for person in staff:
-            date.append({
-                'name': person.first_name,
-                'surname': person.last_name,
-                'phone': str(person.phone)
-            })
-
-        return JsonResponse(date)
+#
+# class StoreStaffView(View):
+#     def get(self, *args, **kwargs):
+#         staff = StoreStaff.objects.all()
+#
+#         date = []
+#         for person in staff:
+#             date.append({
+#                 'name': person.first_name,
+#                 'surname': person.last_name,
+#                 'phone': str(person.phone)
+#             })
+#
+#         return JsonResponse(date)
 
 
 class ComponentInstanceViewSet(ModelViewSet):
@@ -78,22 +82,40 @@ class ComponentInstanceViewSet(ModelViewSet):
     serializer_class = ComponentInstanceSerializer
 
 
-
+@login_required(login_url="/login")
 def home(request):
-    response = requests.get('https://nordicstore.herokuapp.com/components/').json()
-    return render(request, 'home.html', {'response': response})
+    return render(request, 'home.html')
+
+
+@login_required(login_url="/login")
+def create_receiving(request):
+    if request.method == 'POST':
+        form = ReceivedForm(request.POST)
+        if form.is_valid():
+            received_item = form.save(commit=False)
+            received_item.created_by = request.CustomUser
+            return redirect('/home')
+    else:
+        form = ReceivedForm()
+
+    return render(request, 'create_received_item.html', {'form': form})
+
+
+def home1(request):
+    response = requests.get('http://127.0.0.1:8000/components/').json()
+    return render(request, 'sv_us_list.html', {'response': response})
 
 
 class USViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = ComponentInstance.objects.filter(condition_received=1).filter(componentshipment__date_shipped=None)
     serializer_class = ComponentInstanceSerializer
 
 
-
+@login_required(login_url="/login")
 def us_list(request):
     response = requests.get('https://nordicstore.herokuapp.com/us/').json()
-    return render(request, 'home.html', {'response': response})
+    return render(request, 'sv_us_list.html', {'response': response})
 
 
 class SVViewSet(ModelViewSet):
@@ -102,9 +124,10 @@ class SVViewSet(ModelViewSet):
     serializer_class = ComponentInstanceSerializer
 
 
+@login_required(login_url="/login")
 def sv_list(request):
     response = requests.get('https://nordicstore.herokuapp.com/sv/').json()
-    return render(request, 'home.html', {'response': response})
+    return render(request, 'sv_us_list.html', {'response': response})
 
 
 class ShippedViewSet(ModelViewSet):
@@ -113,7 +136,7 @@ class ShippedViewSet(ModelViewSet):
     serializer_class = ShippedListSerializer
 
 
-
+@login_required(login_url="/login")
 def shipped_list(request):
     response = requests.get('https://nordicstore.herokuapp.com/shipped/').json()
     return render(request, 'shipped_list.html', {'response': response})
@@ -137,6 +160,7 @@ class ComponentListView(SingleTableView):
     template_name = 'ComponentFullList.html'
 
 
+@login_required(login_url="/login")
 def list_with_shipment(request):
     components_shipped = ComponentInstance.objects.values_list('component__description',
                                                                'component__part_number',
@@ -151,7 +175,8 @@ def list_with_shipment(request):
                                                                'componentshipment__shipped_condition__condition',
                                                                'componentshipment__shipped_to',
                                                                'componentshipment__invoice',
-                                                               'componentshipment__scrapped_company__company')
+                                                               'componentshipment__scrapped_company__company',
+                                                               'certificate',)
     date = []
     for i in components_shipped:
         date.append({
@@ -169,7 +194,8 @@ def list_with_shipment(request):
             'shipped_condition': i[11],
             'shipped_to': i[12],
             'invoice': i[13],
-            'scrapped_company': i[14]
+            'scrapped_company': i[14],
+            'certificate': i[15]
         }
         )
 
@@ -178,4 +204,3 @@ def list_with_shipment(request):
         template_name='fulltable.html',
         context={'ser': date}
     )
-

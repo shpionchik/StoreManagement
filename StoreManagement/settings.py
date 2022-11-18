@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-!&lx^9+v%witqh(luxzwti)d9pmb(viiswycsjesg+*&##18c#
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ec2-176-34-211-0.eu-west-1.compute.amazonaws.com']
 
 # Application definition
 
@@ -41,9 +41,14 @@ INSTALLED_APPS = [
     'import_export',
 
     'StoreManagement',
+    'crispy_forms',
+    'crispy_bootstrap5',
     # 'rest_framework.authtoken',
 
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -89,8 +94,13 @@ WSGI_APPLICATION = 'StoreManagement.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd4fnkqet4l7e72',
+        'USER': 'mcuceglohyrdtp',
+        'PASSWORD': '58b51c6c1bc157bca4f0c0c58509dbf16aedd967b55de4d09e0a9182f3657d12',
+        'HOST': 'ec2-176-34-211-0.eu-west-1.compute.amazonaws.com',
+        'PORT': '5432'
+
     }
 }
 
@@ -129,12 +139,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 django_heroku.settings(locals())
+
+LOGIN_REDIRECT_URL = '/home'
+LOGOUT_REDIRECT_URL = '/login'

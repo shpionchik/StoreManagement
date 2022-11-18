@@ -174,10 +174,8 @@ class ComponentInstance(models.Model):
     date_received = models.DateField(default=django.utils.timezone.now)
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='updated_by_user', null=True,
-                                   blank=True)
-    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='created_by_user', null=True,
-                                   blank=True)
+    updated_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='updated_by_user')
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='created_by_user')
     received_from = models.CharField(max_length=30)
     staff_received = models.ForeignKey("StoreStaff", on_delete=models.CASCADE)
     quantity = models.PositiveSmallIntegerField(default=1)
