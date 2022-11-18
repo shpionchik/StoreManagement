@@ -38,12 +38,15 @@ urlpatterns = [
                   path('api-token-auth/', views.obtain_auth_token),
                   path('components1/', ComponentListView.as_view()),
                   path('test', home),
-                  path('action_page.php/', hello, name='start-page'),
+                  path('action_page.php/',hello, name='start-page'),
                   path('us_components', us_list),
                   path('sv_components', sv_list),
                   path('shipped_components', shipped_list),
                   path('full_list', list_with_shipment),
-                  path('receiving', create_receiving, name='adding received item'),
+                  path('receiving', create_receiving, name='adding received item')
+
+
+
 
               ] + router.urls
 
