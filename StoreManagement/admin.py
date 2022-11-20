@@ -5,8 +5,8 @@ from .forms import DespatchNoteChangeListForm
 from import_export.admin import ImportExportModelAdmin
 from import_export.widgets import ForeignKeyWidget
 from import_export.resources import Field
-from .models import Warehouse, Shelve, Customer, Component, RepairCompany, Condition, StoreStaff, \
-    ComponentInstance, RepairManagement, ComponentShipment, QuantityType, Location, CustomUser, DespatchNote
+from .models import Warehouse, Shelf, Customer, Component, RepairCompany, Condition, StoreStaff, \
+    ComponentInstance, RepairManagement, ComponentShipment, QuantityType, CustomUser, DespatchNote
 
 
 # class CompositeForeignWidget(widgets.ForeignKeyWidget):
@@ -33,7 +33,7 @@ class ComponentResource(resources.ModelResource):
         # exclude = ('id',)
         import_id_fields = ['id']
         fields = ('id', 'component', 'serial_number', 'quantity', 'received_from', 'staff_received', 'date_received',
-                  'condition_received', 'quantity', 'unit', 'location', 'certificate_number', 'shelf_life',
+                  'condition_received', 'quantity', 'unit', 'warehouse', 'shelf', 'certificate_number', 'shelf_life',
                   'us_part_condition', 'certificate')
 
     # def get_import_fields(self):
@@ -118,18 +118,12 @@ class RepairCompanyAdmin(admin.ModelAdmin):
 admin.site.register(RepairCompany, RepairCompanyAdmin)
 
 
-class ShelveAdmin(admin.ModelAdmin):
-    list_display = ['shelve_number']
+class ShelfAdmin(admin.ModelAdmin):
+    list_display = ['shelf_number']
 
 
-admin.site.register(Shelve, ShelveAdmin)
+admin.site.register(Shelf, ShelfAdmin)
 
-
-class LocationAdmin(admin.ModelAdmin):
-    list_display = ['store', 'shelve']
-
-
-admin.site.register(Location, LocationAdmin)
 
 
 class WarehouseAdmin(admin.ModelAdmin):
@@ -141,7 +135,7 @@ admin.site.register(Warehouse, WarehouseAdmin)
 
 class ComponentInstanceAdmin(ImportExportModelAdmin):
     list_display = ['id', 'component', 'serial_number', 'quantity', 'received_from', 'date_received', 'staff_received',
-                    'condition_received', 'quantity', 'unit', 'location', 'certificate_number', 'shelf_life',
+                    'condition_received', 'quantity', 'unit', 'warehouse', 'shelf', 'certificate_number', 'shelf_life',
                     'us_part_condition', 'certificate']
     resource_classes = [ComponentResource]
 

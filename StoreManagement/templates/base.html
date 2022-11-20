@@ -5,16 +5,17 @@
     <meta charset="UTF-8">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-   <style>
+    <style>
     h1 {text-align: center-right;}
        body {
-    background: url({% static 'media/images/11.jpg' %}) no-repeat;
+    background: url({% static 'media/images/33.jpg' %}) no-repeat;
+
     -moz-background-size: 100%; /* Firefox 3.6+ */
     -webkit-background-size: 100%; /* Safari 3.1+ и Chrome 4.0+ */
     -o-background-size: 100%; /* Opera 9.6+ */
     background-size: 100%; /* Современные браузеры */
    }
-    </style>
+</style>
     <title>{% block title %} NORDICSTORE {% endblock %}</title>
 </head>
 <body>
@@ -25,21 +26,26 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/home">HOME</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/full_list">FULL LIST</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/sv_components">SERVICEABLE LIST</a>
-                    </li>
-                     <li class="nav-item">
-                        <a class="nav-link" href="/us_components">UNSERVICEABLE LIST</a>
-                    </li>
-                     <li class="nav-item">
-                        <a class="nav-link" href="/shipped_components">SHIPPED LIST</a>
-                    </li>
+                     <li class="nav-item dropdown ">
+                       <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">  STORE VIEW</a>
+                            <ul class="dropdown-menu dropdown-menu-dark bg-dark">
+                                <li><a class="dropdown-item " href="/full_list">FULL LIST</a></li>
+                                <li><a class="dropdown-item "  href="/sv_components">SERVICEABLE LIST</a></li>
+                                <li><a class="dropdown-item " href="/us_components">UNSERVICEABLE LIST</a></li>
+                                <li><a class="dropdown-item     " href="/shipped_components">SHIPPED LIST</a></li>
+                            </ul>
+                     </li>
+                     <li class="nav-item dropdown">
+                       <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">  STORE MANAGEMENT</a>
+                            <ul class="dropdown-menu dropdown-menu-dark bg-dark">
+                                <li><a class="dropdown-item" href="/receiving">RECEIVING ITEMS</a></li>
+                               <li> <a class="dropdown-item" href="/shipping">SHIPPING ITEMS</a></li>
+                            </ul>
+                     </li>
                 </ul>
             </div>
         </div>
+
         <div>
             <ul class="navbar-nav">
                 {% if user.is_authenticated %}

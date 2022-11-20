@@ -7,7 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
-
+from rest_framework.views import APIView
+from django.utils.decorators import method_decorator
 from . import settings
 from .models import StoreStaff, ComponentInstance, ComponentShipment
 from django.views.generic import TemplateView
@@ -22,7 +23,7 @@ from django_tables2 import SingleTableView
 from .tables import ComponentTable
 import requests
 from django.contrib.auth.decorators import login_required
-from .forms import ReceivedForm
+from .forms import ReceivedForm, ShippedForm
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
@@ -90,10 +91,12 @@ def home(request):
 @login_required(login_url="/login")
 def create_receiving(request):
     if request.method == 'POST':
-        form = ReceivedForm(request.POST)
+        form = ReceivedForm(request.POST, request.FILES)
         if form.is_valid():
             received_item = form.save(commit=False)
-            received_item.created_by = request.CustomUser
+            received_item.created_by = request.user
+            received_item.updated_by = request.user
+            received_item.save()
             return redirect('/home')
     else:
         form = ReceivedForm()
@@ -101,45 +104,93 @@ def create_receiving(request):
     return render(request, 'create_received_item.html', {'form': form})
 
 
+@login_required(login_url="/login")
+def create_shipping(request):
+    if request.method == 'POST':
+        form = ShippedForm(request.POST)
+        if form.is_valid():
+            shipped_item = form.save(commit=False)
+            shipped_item.save()
+            return redirect('/home')
+    else:
+        form = ShippedForm()
+
+    return render(request, 'create_shipped_item.html', {'form': form})
+
+
 def home1(request):
     response = requests.get('http://127.0.0.1:8000/components/').json()
     return render(request, 'sv_us_list.html', {'response': response})
 
 
-class USViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
-    queryset = ComponentInstance.objects.filter(condition_received=1).filter(componentshipment__date_shipped=None)
-    serializer_class = ComponentInstanceSerializer
+@method_decorator(login_required(login_url="/login"), name='dispatch')
+class UsList(TemplateView):
+    template_name = 'sv_us_list.html'
+
+    def get_context_data(self, **kwargs):
+        queryset = ComponentInstance.objects.filter(condition_received=1).filter(componentshipment__date_shipped=None)
+
+        context = {
+            'response': queryset
+        }
+        return context
 
 
-@login_required(login_url="/login")
-def us_list(request):
-    response = requests.get('https://nordicstore.herokuapp.com/us/').json()
-    return render(request, 'sv_us_list.html', {'response': response})
+# class USViewSet(ModelViewSet):
+#     queryset = ComponentInstance.objects.all()
+#     serializer_class = ComponentInstanceSerializer
+#
+#
+# @login_required(login_url="/login")
+# def us_list(request):
+#     response = requests.get('http://127.0.0.1:8000/us/').json()
+#     return render(request, 'try.html', {'response': response})
 
 
-class SVViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated,)
-    queryset = ComponentInstance.objects.exclude(condition_received=1).filter(componentshipment__date_shipped=None)
-    serializer_class = ComponentInstanceSerializer
+@method_decorator(login_required(login_url="/login"), name='dispatch')
+class SvList(TemplateView):
+    template_name = 'sv_us_list.html'
+
+    def get_context_data(self, **kwargs):
+        queryset = ComponentInstance.objects.exclude(condition_received=1).filter(componentshipment__date_shipped=None)
+        context = {
+            'response': queryset
+        }
+        return context
 
 
-@login_required(login_url="/login")
-def sv_list(request):
-    response = requests.get('https://nordicstore.herokuapp.com/sv/').json()
-    return render(request, 'sv_us_list.html', {'response': response})
+# class SVViewSet(ModelViewSet):
+#     # permission_classes = (IsAuthenticated,)
+#     queryset = ComponentInstance.objects.exclude(condition_received=1).filter(componentshipment__date_shipped=None)
+#     serializer_class = ComponentInstanceSerializer
+#
+#
+# @login_required(login_url="/login")
+# def sv_list(request):
+#     response = requests.get('https://nordicstore.herokuapp.com/sv/').json()
+#     return render(request, 'sv_us_list.html', {'response': response})
+
+@method_decorator(login_required(login_url="/login"), name='dispatch')
+class ShippedList(TemplateView):
+    template_name = 'shipped_list.html'
+
+    def get_context_data(self, **kwargs):
+        queryset = ComponentShipment.objects.all()
+        context = {
+            'response': queryset
+        }
+        return context
+
+# class ShippedViewSet(ModelViewSet):
+#     # permission_classes = (IsAuthenticated,)
+#     queryset = ComponentShipment.objects.all()
+#     serializer_class = ShippedListSerializer
 
 
-class ShippedViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated,)
-    queryset = ComponentShipment.objects.all()
-    serializer_class = ShippedListSerializer
-
-
-@login_required(login_url="/login")
-def shipped_list(request):
-    response = requests.get('https://nordicstore.herokuapp.com/shipped/').json()
-    return render(request, 'shipped_list.html', {'response': response})
+# @login_required(login_url="/login")
+# def shipped_list(request):
+#     response = requests.get('https://nordicstore.herokuapp.com/shipped/').json()
+#     return render(request, 'shipped_list.html', {'response': response})
 
 
 # class ComponentsFullList(generics.RetrieveAPIView):
@@ -176,7 +227,7 @@ def list_with_shipment(request):
                                                                'componentshipment__shipped_to',
                                                                'componentshipment__invoice',
                                                                'componentshipment__scrapped_company__company',
-                                                               'certificate',)
+                                                               'certificate', )
     date = []
     for i in components_shipped:
         date.append({

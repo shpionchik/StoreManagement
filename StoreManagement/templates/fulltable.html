@@ -119,7 +119,7 @@ table.sortable th:not([aria-sort]) button:hover span::after {
 
 <body>
 <nav>
-<a href="/action_page.php/">Home Page</a>
+<a href="/home">Home Page</a>
  <form action="" method=GET>
             {% csrf_token %}
 
@@ -165,7 +165,6 @@ table.sortable th:not([aria-sort]) button:hover span::after {
                 </th>
                 <th class="gray">Quantity</th>
                 <th class="gray">Unit</th>
-                <th class="gray">Certificate №</th>
                 <th class="gray">
                     <button>
                     Date shipped
@@ -195,7 +194,6 @@ table.sortable th:not([aria-sort]) button:hover span::after {
                 <td>{{i.received_from}}</td>
                 <td>{{i.quantity}}</td>
                  <td>{{i.unit}}</td>
-                 <td>{{i.certificate_number}}</td>
                  <td>{{i.date_shipped}}</td>
                  <td>{{i.shipped_condition}}</td>
                  <td>{{i.shipped_to}}</td>

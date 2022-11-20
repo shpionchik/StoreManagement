@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer, HyperlinkedModelSerializer
-from .models import StoreStaff, ComponentInstance, Component, Condition, ComponentShipment, Location, Warehouse,\
+from .models import StoreStaff, ComponentInstance, Component, Condition, ComponentShipment, Warehouse,\
     RepairCompany
 from rest_framework.fields import SerializerMethodField
 
@@ -41,12 +41,6 @@ class WarehouseSerializer(ModelSerializer):
         fields = ['name']
 
 
-class LocationSerializer(ModelSerializer):
-    store = WarehouseSerializer()
-
-    class Meta:
-        model = Location
-        fields = ['store']
 
 
 class ComponentInstanceSerializer(ModelSerializer):
@@ -54,7 +48,7 @@ class ComponentInstanceSerializer(ModelSerializer):
     component = ComponentNestedSerialized()
     staff_received = StaffReceivedNestedSerializer()
     condition_received = StatusNestedSerializer()
-    location = LocationSerializer()
+
 
     class Meta:
         model = ComponentInstance

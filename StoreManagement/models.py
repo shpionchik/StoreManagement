@@ -82,20 +82,13 @@ class Warehouse(models.Model):
         verbose_name_plural = "Warehouses"
 
 
-class Shelve(models.Model):
-    shelve_number = models.PositiveSmallIntegerField(unique=True)
+class Shelf(models.Model):
+    shelf_number = models.CharField(max_length=30, unique=True, null=True, blank=True)
 
     class Meta:
         verbose_name = "Shelf"
         verbose_name_plural = "Shelves"
 
-
-class Location(models.Model):
-    store = models.ForeignKey('Warehouse', on_delete=models.CASCADE)
-    shelve = models.ForeignKey('Shelve', on_delete=models.CASCADE, null=True, blank=True)
-
-    def __str__(self):
-        return f'{self.store} {"-"} {self.shelve}'
 
 
 class Customer(models.Model):
@@ -155,8 +148,8 @@ class Component(models.Model):
         return f"{self.description} {'P/N '}{self.part_number}"
 
     class Meta:
-        verbose_name = "ComponentAbstract"
-        verbose_name_plural = "ComponentsAbstract"
+        verbose_name = "ComponentDescription&PN"
+        verbose_name_plural = "ComponentDescription&PN"
 
 
 class QuantityType(models.Model):
@@ -173,19 +166,20 @@ class ComponentInstance(models.Model):
     condition_received = models.ForeignKey("Condition", on_delete=models.CASCADE)
     date_received = models.DateField(default=django.utils.timezone.now)
     time_create = models.DateTimeField(auto_now_add=True)
-    time_update = models.DateTimeField(auto_now=True)
+    time_update = models.DateTimeField(auto_now_add=True)
     updated_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='updated_by_user')
     created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='created_by_user')
     received_from = models.CharField(max_length=30)
     staff_received = models.ForeignKey("StoreStaff", on_delete=models.CASCADE)
     quantity = models.PositiveSmallIntegerField(default=1)
     unit = models.ForeignKey('QuantityType', on_delete=models.CASCADE, default=1)
-    location = models.ForeignKey('Location', on_delete=models.CASCADE, null=True, blank=True)
+    warehouse = models.ForeignKey('Warehouse', on_delete=models.CASCADE,  null=True, blank=True)
+    shelf = models.ForeignKey('Shelf', on_delete=models.CASCADE, null=True, blank=True)
     certificate_number = models.CharField(max_length=50, null=True, blank=True)
     shelf_life = models.CharField(max_length=50, null=True, blank=True)
-    us_part_condition = models.CharField(max_length=50, null=True, blank=True)
+    us_part_condition = models.CharField(max_length=50, null=True, blank=True, default='Repairable')
     notes = models.CharField(max_length=50, null=True, blank=True)
-    certificate = models. FileField(upload_to='certificate/', blank=True, null=True)
+    certificate = models. FileField(upload_to='certificate/%Y/%m/%d/', blank=True, null=True)
 
 
     def __str__(self):
