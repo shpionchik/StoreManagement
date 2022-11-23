@@ -186,7 +186,7 @@ class Condition(models.Model):
 
 
 class Component(models.Model):
-    description = models.CharField(max_length=30)
+    description = models.CharField(max_length=60)
     part_number = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
