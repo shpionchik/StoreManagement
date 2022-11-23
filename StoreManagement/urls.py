@@ -18,14 +18,14 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.views.static import serve
 from django.urls import path, include
-from .views import hello, ComponentInstanceViewSet, ComponentListView, home, list_with_shipment, \
-    create_receiving, UsList, SvList, create_shipping, ShippedList
+from .views import hello, home, list_with_shipment, \
+    create_receiving, UsList, SvList, create_shipping, ShippedList, sign_up
 
 from rest_framework.routers import SimpleRouter
 from rest_framework.authtoken import views
 
 router = SimpleRouter()
-router.register('components', ComponentInstanceViewSet)
+
 
 
 urlpatterns = [
@@ -34,7 +34,6 @@ urlpatterns = [
                   path('home', home, name='home'),
                   path('', include('django.contrib.auth.urls')),
                   path('api-token-auth/', views.obtain_auth_token),
-                  path('components1/', ComponentListView.as_view()),
                   path('test', home),
                   path('action_page.php/', hello, name='start-page'),
                   path('us_components', UsList.as_view()),
@@ -42,7 +41,8 @@ urlpatterns = [
                   path('shipped_components', ShippedList.as_view()),
                   path('full_list', list_with_shipment),
                   path('receiving', create_receiving, name='adding received item'),
-                  path('shipping', create_shipping, name='adding shipped item')
+                  path('shipping', create_shipping, name='adding shipped item'),
+                  path('sign-up', sign_up, name= 'sign_up')
 
 
 

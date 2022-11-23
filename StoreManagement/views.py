@@ -31,8 +31,7 @@ from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework import views
 from rest_framework.response import Response
-
-
+from .forms import RegisterForm
 #
 # def auth(request):
 #     if request.method == "POST":
@@ -76,11 +75,11 @@ def hello(request):
 #
 #         return JsonResponse(date)
 
-
-class ComponentInstanceViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated,)
-    queryset = ComponentInstance.objects.all()
-    serializer_class = ComponentInstanceSerializer
+#
+# class ComponentInstanceViewSet(ModelViewSet):
+#     # permission_classes = (IsAuthenticated,)
+#     queryset = ComponentInstance.objects.all()
+#     serializer_class = ComponentInstanceSerializer
 
 
 @login_required(login_url="/login")
@@ -117,10 +116,10 @@ def create_shipping(request):
 
     return render(request, 'create_shipped_item.html', {'form': form})
 
-
-def home1(request):
-    response = requests.get('http://127.0.0.1:8000/components/').json()
-    return render(request, 'sv_us_list.html', {'response': response})
+#
+# def home1(request):
+#     response = requests.get('http://127.0.0.1:8000/components/').json()
+#     return render(request, 'sv_us_list.html', {'response': response})
 
 
 @method_decorator(login_required(login_url="/login"), name='dispatch')
@@ -203,13 +202,24 @@ class ShippedList(TemplateView):
 #         self.object = self.get_object()
 #         return Response({'component':self.object}, template_name=ComponentsFullList)
 
+# #
+# class ComponentListView(SingleTableView):
+#     permission_classes = (IsAuthenticated,)
+#     model = ComponentInstance
+#     table_class = ComponentTable
+#     template_name = 'ComponentFullList.html'
 
-class ComponentListView(SingleTableView):
-    permission_classes = (IsAuthenticated,)
-    model = ComponentInstance
-    table_class = ComponentTable
-    template_name = 'ComponentFullList.html'
+def sign_up(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('/home')
+    else:
+        form = RegisterForm()
 
+    return render(request, 'registration/sign_up.html', {"form": form})
 
 @login_required(login_url="/login")
 def list_with_shipment(request):

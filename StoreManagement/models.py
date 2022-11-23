@@ -1,12 +1,15 @@
 import datetime
+
+from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 import django
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db import models
+from import_export import results
 from phonenumber_field.modelfields import PhoneNumberField
 from django.urls import reverse
-
+from django.conf import settings
 """
     Warehouse:
         - id
@@ -69,7 +72,49 @@ from django.urls import reverse
 
 class CustomUser(AbstractUser):
     middle_name = models.CharField(max_length=50, null=True, blank=True)
+    class Role(models.TextChoices):
+        ADMIN = "ADMIN", "Admin"
+        STAFF = "STAFF", "Staff"
+        VIEWER = "VIEWER", "Viewer"
 
+    base_role = Role.ADMIN
+
+    role = models.CharField(max_length=50, choices=Role.choices)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.role = self.base_role
+            return super().save(*args, **kwargs)
+
+class StaffManager(BaseUserManager):
+    def get_queryset(self, *args, **kwargs):
+        return results.filter(role=CustomUser.Role.STAFF)
+
+class Staff(CustomUser):
+    base_role = CustomUser.Role.STAFF
+
+    staff = StaffManager()
+
+    class Meta:
+        proxy = True
+
+    def welcome(self):
+        return 'only for staff'
+
+class ViewerManager(BaseUserManager):
+    def get_queryset(self, *args, **kwargs):
+        return results.filter(role=CustomUser.Role.VIEWER)
+
+class Viewer(CustomUser):
+    base_role = CustomUser.Role.STAFF
+
+    viewer = ViewerManager()
+
+    class Meta:
+        proxy = True
+
+    def welcome(self):
+        return 'only for users'
 
 class Warehouse(models.Model):
     name = models.CharField(max_length=30, unique=True)
@@ -167,8 +212,8 @@ class ComponentInstance(models.Model):
     date_received = models.DateField(default=django.utils.timezone.now)
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now_add=True)
-    updated_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='updated_by_user')
-    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='created_by_user')
+    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='updated_by_user')
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_by_user')
     received_from = models.CharField(max_length=30)
     staff_received = models.ForeignKey("StoreStaff", on_delete=models.CASCADE)
     quantity = models.PositiveSmallIntegerField(default=1)

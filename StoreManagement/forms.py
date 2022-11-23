@@ -1,11 +1,19 @@
 from django import forms
 from .models import ComponentShipment, ComponentInstance
-
+from django.contrib.auth.forms import UserCreationForm
+from .models import CustomUser
 
 class DespatchNoteChangeListForm(forms.ModelForm):
     # here we only need to define the field we want to be editable
     despatched_unit = forms.ModelMultipleChoiceField(queryset=ComponentShipment.objects.all(), required=False)
 
+
+class RegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ["username", "email", "password1", "password2"]
 
 class ReceivedForm(forms.ModelForm):
     class Meta:
