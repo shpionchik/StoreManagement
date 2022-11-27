@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-!&lx^9+v%witqh(luxzwti)d9pmb(viiswycsjesg+*&##18c#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['ec2-176-34-211-0.eu-west-1.compute.amazonaws.com']
 
 # Application definition
@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'StoreManagement',
     'crispy_forms',
     'crispy_bootstrap5',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'storages'
 
 ]
 
@@ -137,6 +138,13 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_ACCESS_KEY_ID = 'AKIA4D3PLCS43OOGN7GM'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'certsstorenordic'
+AWS_QUERYSTRING_AUTH = False
+
+
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
@@ -151,3 +159,4 @@ django_heroku.settings(locals())
 
 LOGIN_REDIRECT_URL = '/home'
 LOGOUT_REDIRECT_URL = '/login'
+
