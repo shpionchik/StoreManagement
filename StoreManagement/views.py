@@ -237,7 +237,7 @@ def list_with_shipment(request):
                                                                'componentshipment__shipped_to',
                                                                'componentshipment__invoice',
                                                                'componentshipment__scrapped_company__company',
-                                                               'certificate', )
+                                                               'certificate', 'componentshipment__shipped_quantity' )
     date = []
     for i in components_shipped:
         date.append({
@@ -256,7 +256,8 @@ def list_with_shipment(request):
             'shipped_to': i[12],
             'invoice': i[13],
             'scrapped_company': i[14],
-            'certificate': i[15]
+            'certificate': i[15],
+            'shipped_quantity': i[16]
         }
         )
 

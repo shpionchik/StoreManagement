@@ -177,7 +177,18 @@ table.sortable th:not([aria-sort]) button:hover span::after {
                         <span aria-hidden="true"></span>
                     </button>
                 </th>
-                 <th class="gray">Shipped to</th>
+                <th class="gray">
+                    <button>
+                    Shipped to
+                        <span aria-hidden="true"></span>
+                    </button>
+                </th>
+                <th class="gray">
+                    <button>
+                    Shipped quantity
+                        <span aria-hidden="true"></span>
+                    </button>
+                </th>
                  <th class="gray">Invoice</th>
                 <th class="gray">Certificate</th>
             </tr>
@@ -197,6 +208,7 @@ table.sortable th:not([aria-sort]) button:hover span::after {
                  <td>{{i.date_shipped}}</td>
                  <td>{{i.shipped_condition}}</td>
                  <td>{{i.shipped_to}}</td>
+                 <td>{{i.shipped_quantity}}</td>
                   <td>{{i.invoice}}</td>
                  <td><a href="{{ i.certificate }}">Download</a></td>
             </tr>
