@@ -143,12 +143,12 @@ AWS_ACCESS_KEY_ID = 'AKIA4D3PLCS43OOGN7GM'
 AWS_SECRET_ACCESS_KEY = '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'
 AWS_STORAGE_BUCKET_NAME = 'certsstorenordic'
 AWS_QUERYSTRING_AUTH = False
-
-
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.eu-west-3.amazonaws.com'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
-MEDIA_URL = ''
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+
 MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
