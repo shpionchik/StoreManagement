@@ -228,7 +228,7 @@ class ComponentInstance(models.Model):
 
 
     def __str__(self):
-        return f"{self.component} {'S/N '} {self.serial_number} {self.condition_received} {'received'} {self.date_received}"
+        return f"{self.serial_number} {self.component} {self.condition_received} {'received'} {self.date_received}"
 
     class Meta:
         verbose_name = "Component"
