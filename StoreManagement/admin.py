@@ -49,6 +49,16 @@ class ComponentAbstractResource(resources.ModelResource):
         fields = ('id', 'description', 'part_number')
 
 
+class ShipmentResource(resources.ModelResource):
+    class Meta:
+        model = ComponentShipment
+        skip_unchanged = True
+        report_skipped = True
+        import_id_fields = ['id']
+        fields = ('id', 'shipped_component', 'shipped_quantity', 'unit', 'date_shipped', 'shipped_to',
+                  'shipped_condition', 'invoice', 'staff_shipped')
+
+
 class DespatchNoteChangeList(ChangeList):
     def __init__(self,
                  request,
@@ -88,9 +98,11 @@ class DespatchNoteAdmin(admin.ModelAdmin):
 admin.site.register(DespatchNote, DespatchNoteAdmin)
 
 
-class ComponentShipmentAdmin(admin.ModelAdmin):
+class ComponentShipmentAdmin(ImportExportModelAdmin):
     list_display = ('shipped_component', 'date_shipped', 'shipped_to', 'shipped_condition', 'invoice', 'staff_shipped',
                     'scrapped_company', 'shipping_order_notes')
+
+    resource_classes = [ShipmentResource]
 
 
 admin.site.register(ComponentShipment, ComponentShipmentAdmin)
@@ -123,7 +135,6 @@ class ShelfAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Shelf, ShelfAdmin)
-
 
 
 class WarehouseAdmin(admin.ModelAdmin):

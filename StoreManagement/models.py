@@ -190,7 +190,7 @@ class Component(models.Model):
     part_number = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
-        return f"{self.description} {'P/N '}{self.part_number}"
+        return f"{self.part_number} {self.description}"
 
     class Meta:
         verbose_name = "ComponentDescription&PN"
@@ -228,7 +228,7 @@ class ComponentInstance(models.Model):
 
 
     def __str__(self):
-        return f"{self.component} {'S/N  '} {self.serial_number} {'received condition'} {self.condition_received} {'received date'} {self.date_received}"
+        return f"{self.component} {'S/N '} {self.serial_number} {self.condition_received} {'received'} {self.date_received}"
 
     class Meta:
         verbose_name = "Component"
