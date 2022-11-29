@@ -5,7 +5,6 @@ from django.db import models
 from django.utils import timezone
 from import_export import results
 
-from storages.backends.s3boto3 import S3Boto3Storage
 
 """
     Warehouse:
