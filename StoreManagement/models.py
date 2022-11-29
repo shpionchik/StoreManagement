@@ -1,15 +1,12 @@
-import datetime
-
+import django
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
-import django
-from django.contrib.auth.models import User
-from django.utils import timezone
 from django.db import models
+from django.utils import timezone
 from import_export import results
-from phonenumber_field.modelfields import PhoneNumberField
-from django.urls import reverse
-from django.conf import settings
+
+from storages.backends.s3boto3 import S3Boto3Storage
+
 """
     Warehouse:
         - id
@@ -204,6 +201,7 @@ class QuantityType(models.Model):
         return f'{self.quantity_type}'
 
 
+
 class ComponentInstance(models.Model):
     component = models.ForeignKey('Component', on_delete=models.CASCADE)
     serial_number = models.CharField(max_length=50)
@@ -224,7 +222,7 @@ class ComponentInstance(models.Model):
     shelf_life = models.CharField(max_length=50, null=True, blank=True)
     us_part_condition = models.CharField(max_length=50, null=True, blank=True, default='Repairable')
     notes = models.CharField(max_length=50, null=True, blank=True)
-    certificate = models. FileField(upload_to='certificate/%Y/%m/%d/', blank=True, null=True)
+    certificate = models.FileField(upload_to='certificate/%Y/%m/%d/', blank=True, null=True)
 
 
     def __str__(self):
@@ -269,3 +267,4 @@ class DespatchNote(models.Model):
     sizes = models.CharField(max_length=30, null=True, blank=True)
     weight = models.CharField(max_length=30, null=True, blank=True)
     notes = models.CharField(max_length=30, null=True, blank=True)
+

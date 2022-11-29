@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'rest_framework.authtoken',
 
-
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
@@ -159,4 +158,3 @@ django_heroku.settings(locals())
 
 LOGIN_REDIRECT_URL = '/home'
 LOGOUT_REDIRECT_URL = '/login'
-
